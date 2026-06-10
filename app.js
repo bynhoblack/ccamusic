@@ -2,8 +2,11 @@
 // =====================================================================
 
 // Configurações de Conexão com o Supabase
-const SUPABASE_URL = "https://ldsyjywdufhrblncadvj.supabase.co";
-const SUPABASE_KEY = "sb_publishable_oxkG6V8AV2YFrRVRc-Bygg_hHrbwKyV";
+const SUPABASE_URL = 'https://ldsyjywdufhrblncadvj.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxkc3lqeXdkdWZocmJsbmNhZHZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMTM5ODMsImV4cCI6MjA5NjU4OTk4M30.9CO7Jziy-VItNFlpDGKlkrV6f_DPXwmq-Mdu5rRYaCk';
+
+// Cria o cliente global do Supabase utilizando a biblioteca carregada no HTML
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 const ADMIN_SECURITY_CODE = "CCA2026"; // Código de validação para novos administradores
 
