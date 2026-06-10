@@ -995,25 +995,19 @@ function setupAuthForms() {
       photo_url: ""
     };
 
-    const res = await fetch('https://ldsyjywdufhrblncadvj.supabase.co/rest/v1/members', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxkc3lqeXdkdWZocmJsbmNhZHZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMTM5ODMsImV4cCI6MjA5NjU4OTk4M30.9CO7Jziy-VItNFlpDGKlkrV6f_DPXwmq-Mdu5rRYaCk',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxkc3lqeXdkdWZocmJsbmNhZHZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMTM5ODMsImV4cCI6MjA5NjU4OTk4M30.9CO7Jziy-VItNFlpDGKlkrV6f_DPXwmq-Mdu5rRYaCk',
-        'Prefer': 'return=representation'
-      },
-      body: JSON.stringify(body)
-    });
+    const { data, error } = await supabase
+      .from('members')
+      .insert([body])
+      .select();
 
-    if (res.ok) {
-      const created = await res.json();
-      localStorage.setItem("cca_user", JSON.stringify(created[0]));
+    if (error) {
+      console.error("Erro detalhado do Supabase:", error);
+      alert("Erro ao registrar conta: " + error.message);
+    } else {
+      alert("Cadastro realizado com sucesso!");
+      localStorage.setItem("cca_user", JSON.stringify(data[0]));
       document.getElementById("auth-screen-overlay").classList.remove("active");
       await loadData();
-    } else {
-      err.textContent = "Erro ao registrar conta. E-mail já em uso.";
-      err.classList.remove("hidden");
     }
   };
 }
