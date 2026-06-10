@@ -995,8 +995,15 @@ function setupAuthForms() {
       photo_url: ""
     };
 
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/members`, {
-      method: "POST", headers: getHeaders(), body: JSON.stringify(body)
+    const res = await fetch('https://ldsyjywdufhrblncadvj.supabase.co/rest/v1/members', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxkc3lqeXdkdWZocmJsbmNhZHZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMTM5ODMsImV4cCI6MjA5NjU4OTk4M30.9CO7Jziy-VItNFlpDGKlkrV6f_DPXwmq-Mdu5rRYaCk',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxkc3lqeXdkdWZocmJsbmNhZHZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMTM5ODMsImV4cCI6MjA5NjU4OTk4M30.9CO7Jziy-VItNFlpDGKlkrV6f_DPXwmq-Mdu5rRYaCk',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(body)
     });
 
     if (res.ok) {
