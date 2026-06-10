@@ -24,8 +24,12 @@
         <span class="logo-text">CCA <span>Music</span></span>
       </div>
 
-      <div class="user-selector-box" id="user-profile-box">
-        <!-- Populado dinamicamente com foto, nome, apelido e cargos -->
+      <div class="user-selector-box">
+        <label for="current-user-select"><i class="fa-solid fa-user-circle"></i> Simular Membro:</label>
+        <select id="current-user-select" class="user-dropdown">
+          <!-- Populated by JavaScript -->
+        </select>
+        <span class="user-badge" id="user-role-badge">Líder</span>
       </div>
 
       <nav class="nav-menu">
@@ -499,7 +503,7 @@
       <header class="cifra-viewer-header">
         <div class="song-meta-view">
           <span class="badge" id="view-song-rhythm">Balada</span>
-          <h2>Nome da Música</h2>
+          <h2 id="view-song-title">Nome da Música</h2>
           <p class="text-secondary" id="view-song-artist">Artista</p>
         </div>
         
@@ -658,7 +662,7 @@
     </div>
   </div>
 
-  <!-- Scripts Originais do Antigravity -->
+  <!-- Scripts -->
   <script src="seedData.js"></script>
   <script src="app.js"></script>
 </body>
