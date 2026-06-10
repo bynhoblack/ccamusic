@@ -42,6 +42,9 @@ h1, h2, h3, .logo-text {
   min-height: 100vh;
 }
 
+/* ==========================================================================
+   SIDEBAR & SELETOR DE MEMBRO
+   ========================================================================== */
 .sidebar {
   width: var(--sidebar-width);
   background-color: #0f172a;
@@ -148,6 +151,7 @@ h1, h2, h3, .logo-text {
   align-items: center;
   gap: 0.75rem;
   transition: var(--transition);
+  width: 100%;
 }
 
 .nav-item:hover, .nav-item.active {
@@ -172,6 +176,7 @@ h1, h2, h3, .logo-text {
   cursor: pointer;
   margin-bottom: 1rem;
   font-weight: 500;
+  transition: var(--transition);
 }
 
 .btn-logout:hover {
@@ -179,6 +184,9 @@ h1, h2, h3, .logo-text {
   color: #fff;
 }
 
+/* ==========================================================================
+   CONTEÚDO PRINCIPAL & ESTRUTURA GERAL
+   ========================================================================== */
 .main-content {
   margin-left: var(--sidebar-width);
   flex: 1;
@@ -195,9 +203,7 @@ h1, h2, h3, .logo-text {
   padding-bottom: 1rem;
 }
 
-.text-secondary {
-  color: var(--text-secondary);
-}
+.text-secondary { color: var(--text-secondary); }
 .font-sm { font-size: 0.85rem; }
 
 .date-display {
@@ -211,13 +217,10 @@ h1, h2, h3, .logo-text {
   gap: 0.5rem;
 }
 
-.tab-view {
-  display: none;
-}
-.tab-view.active {
-  display: block;
-}
+.tab-view { display: none; }
+.tab-view.active { display: block; }
 
+/* Botões */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -231,28 +234,21 @@ h1, h2, h3, .logo-text {
   border: 1px solid transparent;
 }
 
-.btn-primary {
-  background: var(--primary);
-  color: #fff;
-}
+.btn-primary { background: var(--primary); color: #fff; }
 .btn-primary:hover { background: var(--primary-hover); }
 
-.btn-secondary {
-  background: #e2e8f0;
-  color: #334155;
-}
+.btn-secondary { background: #e2e8f0; color: #334155; }
 .btn-secondary:hover { background: #cbd5e1; }
 
-.btn-danger {
-  background: var(--danger);
-  color: #fff;
-}
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { background: #dc2626; }
 
 .section-actions-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+  gap: 1rem;
 }
 
 .card {
@@ -263,6 +259,9 @@ h1, h2, h3, .logo-text {
   box-shadow: var(--shadow);
 }
 
+/* ==========================================================================
+   PAINEL GERAL (DASHBOARD)
+   ========================================================================== */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -294,8 +293,33 @@ h1, h2, h3, .logo-text {
 .stat-icon.blue { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
 .stat-icon.green { background: rgba(16, 185, 129, 0.1); color: var(--success); }
 
+.badge-accent {
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 4px 10px;
+  border-radius: 30px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
 .highlight-card {
   border-left: 5px solid var(--primary);
+}
+
+.highlight-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.event-title-highlight {
+  font-size: 1.4rem;
+  color: var(--text-main);
+  margin-bottom: 1rem;
 }
 
 .highlight-grid {
@@ -305,28 +329,54 @@ h1, h2, h3, .logo-text {
   margin-top: 1rem;
 }
 
+.highlight-meta-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .meta-item {
   display: flex;
   gap: 0.75rem;
-  margin-bottom: 1rem;
+}
+
+.meta-item i {
+  color: var(--primary);
+  font-size: 1.1rem;
+  margin-top: 2px;
+}
+
+.time-arrival {
+  color: var(--warning);
+  font-weight: 600;
 }
 
 .color-palette-preview {
   display: flex;
-  gap: 4px;
-  margin-top: 0.25rem;
+  gap: 6px;
+  margin-top: 0.4rem;
 }
 
 .color-dot {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  border: 1px solid #cbd5e1;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px var(--border-color);
 }
 
 .quick-presence-box {
   background: #f8fafc;
   margin-top: 1.5rem;
+  border: 1px dashed var(--border-color);
+}
+
+.quick-presence-box h4 {
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .quick-presence-actions {
@@ -335,6 +385,69 @@ h1, h2, h3, .logo-text {
   margin-top: 0.75rem;
 }
 
+/* Listas internas do destaque */
+.scale-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.scale-list li {
+  background: var(--bg-main);
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.scale-list li strong { color: var(--text-main); }
+.scale-list li span { color: var(--text-secondary); font-size: 0.85rem; }
+
+.songs-list-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.song-link-item {
+  background: var(--bg-main);
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  color: var(--text-main);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.song-link-item:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* Presenças com Cores Semânticas */
+.presence-indicator {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.presence-confirmed { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.presence-declined { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+.presence-pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+
+/* ==========================================================================
+   AGENDAS, CIFRAS E COMPONENTES DE GRIDS
+   ========================================================================== */
 .cifras-list-grid, .events-grid, .members-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -355,7 +468,7 @@ h1, h2, h3, .logo-text {
 
 .search-input-wrapper i {
   position: absolute;
-  left: 10px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-secondary);
@@ -363,17 +476,59 @@ h1, h2, h3, .logo-text {
 
 .search-input-wrapper input {
   width: 100%;
-  padding: 0.6rem 0.6rem 0.6rem 2rem;
+  padding: 0.6rem 0.6rem 0.6rem 2.25rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
+  outline: none;
+  transition: var(--transition);
 }
+.search-input-wrapper input:focus { border-color: var(--primary); }
 
 .filter-dropdown {
   padding: 0.6rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
+  background: #fff;
+  outline: none;
 }
 
+.btn-cifraclub {
+  background: #ffda00;
+  color: #1a1a1a;
+}
+.btn-cifraclub:hover { background: #e6c400; }
+
+/* Cifras Cards, Event Cards e Member Cards adicionais */
+.song-card, .event-card, .member-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.song-card-header, .event-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.song-card-key {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   VISUALIZADOR DE CIFRAS INTEGRADO
+   ========================================================================== */
 .cifra-viewer-overlay {
   position: fixed;
   top: 0; left: 0; width: 100vw; height: 100vh;
@@ -381,6 +536,8 @@ h1, h2, h3, .logo-text {
   z-index: 100;
   display: none;
 }
+
+.cifra-viewer-overlay.active { display: block; }
 
 .cifra-viewer-container {
   max-width: 900px;
@@ -398,12 +555,66 @@ h1, h2, h3, .logo-text {
   border-bottom: 2px solid var(--border-color);
   padding-bottom: 1rem;
   margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.cifra-viewer-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-main);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.control-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.transposer-buttons, .autoscroll-buttons, .font-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+#current-key-display {
+  font-weight: 700;
+  min-width: 24px;
+  text-align: center;
+  color: var(--primary);
+}
+
+.btn-xs {
+  padding: 3px 8px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+}
+.btn-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 1.1rem;
 }
 
 .cifra-viewer-body {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 1.5rem;
   background: #fdfdfd;
   border-radius: var(--radius-md);
   border: 1px solid #f1f5f9;
@@ -413,6 +624,7 @@ h1, h2, h3, .logo-text {
   font-family: 'Courier New', Courier, monospace;
   font-size: 16px;
   line-height: 1.7;
+  white-space: pre-wrap;
 }
 
 .chord-highlight {
@@ -423,6 +635,9 @@ h1, h2, h3, .logo-text {
   border-radius: 4px;
 }
 
+/* ==========================================================================
+   GALERIA & LIGHTBOX ATUALIZADO
+   ========================================================================== */
 .gallery-masonry {
   columns: 3 250px;
   column-gap: 1.5rem;
@@ -454,6 +669,76 @@ h1, h2, h3, .logo-text {
   font-size: 0.9rem;
 }
 
+/* Estilos Modernos do Lightbox */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.lightbox-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.lightbox-content {
+  max-width: 85vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.lightbox-content img {
+  max-width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+#lightbox-caption {
+  color: #fff;
+  margin-top: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  text-align: center;
+  background: rgba(30, 41, 59, 0.8);
+  padding: 0.5rem 1.5rem;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  color: #94a3b8;
+  font-size: 2.5rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.lightbox-close:hover {
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* ==========================================================================
+   MODAIS & SISTEMA DE AUTENTICAÇÃO
+   ========================================================================== */
 .modal-backdrop, .auth-screen-overlay {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -477,8 +762,6 @@ h1, h2, h3, .logo-text {
   width: 100%;
   max-width: 500px;
   box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-  
-  /* Ajuste automático para telas menores */
   max-height: 90vh;
   overflow-y: auto;
   display: flex;
@@ -490,7 +773,6 @@ h1, h2, h3, .logo-text {
   width: 95%;
 }
 
-/* Garante que o formulário dentro do modal se comporte bem com a rolagem */
 .modal-card form {
   display: flex;
   flex-direction: column;
@@ -509,7 +791,9 @@ h1, h2, h3, .logo-text {
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
+  color: var(--text-secondary);
 }
+.btn-close-modal:hover { color: var(--danger); }
 
 .form-group {
   margin-bottom: 1.25rem;
@@ -529,28 +813,83 @@ h1, h2, h3, .logo-text {
   border-radius: var(--radius-sm);
   font-family: inherit;
   outline: none;
+  background: #fff;
+  transition: var(--transition);
 }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
 
 .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
 
-.songs-checkboxes-container {
+.songs-checkboxes-container, .scale-selector-container {
   max-height: 180px;
   overflow-y: auto;
   border: 1px solid var(--border-color);
   padding: 0.75rem;
   border-radius: var(--radius-sm);
   background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}
+
+/* Estilos de Login / Cadastro */
+.auth-screen-overlay {
+  background: #0f172a;
+  z-index: 500;
+}
+
+.auth-card {
+  max-width: 550px;
+}
+
+.auth-logo-section {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.auth-submit-btn {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.auth-error-msg {
+  color: var(--danger);
+  font-size: 0.8rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.auth-footer-toggle {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 1.5rem;
+}
+
+.link-toggle {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .hidden { display: none !important; }
-
-@media (max-width: 768px) {
-  .app-container { flex-direction: column; }
-  .sidebar { width: 100%; height: auto; position: relative; }
-  .main-content { margin-left: 0; padding: 1rem; }
-  .stats-grid, .highlight-grid { grid-template-columns: 1fr; }
-}
 
 /* ==========================================================================
    AJUSTES DA LOGO NAS TELAS DE LOGIN E CADASTRO
@@ -578,4 +917,26 @@ h1, h2, h3, .logo-text {
 .auth-card .logo-text {
   font-size: 1.5rem;
   margin: 0;
+}
+
+/* ==========================================================================
+   MEDIA QUERIES (RESPONSIVIDADE)
+   ========================================================================== */
+@media (max-width: 992px) {
+  .highlight-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .cifra-viewer-header { flex-direction: column; align-items: flex-start; }
+  .cifra-viewer-controls { width: 100%; justify-content: space-between; }
+}
+
+@media (max-width: 768px) {
+  .app-container { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: relative; padding: 1rem; }
+  .logo-area { margin-bottom: 1rem; }
+  .main-content { margin-left: 0; padding: 1rem; }
+  .stats-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .section-actions-bar { flex-direction: column; align-items: flex-start; }
+  .search-filter-group { width: 100%; max-width: 100%; }
+  .form-row-2, .form-row-3 { grid-template-columns: 1fr; gap: 0; }
+  .top-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .lightbox-close { top: 1rem; right: 1rem; font-size: 2rem; }
 }
