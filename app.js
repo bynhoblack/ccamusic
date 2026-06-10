@@ -18,7 +18,6 @@ const getHeaders = () => ({
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("Iniciando carregamento...");
   
-  // Executamos em etapas para não travar tudo se uma falhar
   await loadData();
   
   console.log("LoadData concluído, prosseguindo...");
@@ -30,8 +29,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function loadData() {
+  console.log("1. Tentando buscar dados do Supabase...");
   try {
-    // Adicionamos timeout ou tratamento individual para evitar que o Promise.all trave
     const endpoints = [
       { name: 'members', url: `${SUPABASE_URL}/rest/v1/members?order=name.asc` },
       { name: 'songs', url: `${SUPABASE_URL}/rest/v1/songs?order=title.asc` },
@@ -41,16 +40,23 @@ async function loadData() {
     ];
 
     const results = await Promise.all(endpoints.map(async (ep) => {
+      console.log(`2. Buscando endpoint: ${ep.name}...`);
       const response = await fetch(ep.url, { headers: getHeaders() });
-      if (!response.ok) throw new Error(`Erro em ${ep.name}: ${response.status}`);
-      return response.json();
+      
+      if (!response.ok) {
+        console.error(`Erro ao carregar ${ep.name}: Status ${response.status}`);
+        throw new Error(`Erro em ${ep.name}: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log(`3. Dados de ${ep.name} recebidos.`);
+      return data;
     }));
 
     [members, songs, events, photos, presencesCache] = results;
     
-    console.log("Dados carregados com sucesso.");
+    console.log("4. Todos os dados carregados com sucesso.");
 
-    // (O restante da sua lógica de mapeamento permanece aqui...)
     if (Array.isArray(events)) {
       events.forEach(ev => {
         ev.presences = {};
@@ -65,7 +71,6 @@ async function loadData() {
     renderActiveView();
   } catch (err) {
     console.error("ERRO CRÍTICO NO LOAD DATA:", err);
-    // Garantir que a UI seja renderizada mesmo com erro de dados para evitar tela branca
     renderActiveView(); 
   }
 }
