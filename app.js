@@ -47,7 +47,7 @@ async function loadData() {
   try {
     const [resMembers, resSongs, resEvents, resPhotos, resPresences] = await Promise.all([
       fetch(`${SUPABASE_URL}/rest/v1/members?order=name.asc`, { headers: getHeaders() }),
-      fetch(`${SUPABASE_URL}/rest/v1/songs?order=title.asc nudge`, { headers: getHeaders() }),
+      fetch(`${SUPABASE_URL}/rest/v1/songs?order=title.asc`, { headers: getHeaders() }),
       fetch(`${SUPABASE_URL}/rest/v1/events?order=date.asc`, { headers: getHeaders() }),
       fetch(`${SUPABASE_URL}/rest/v1/photos?order=created_at.desc`, { headers: getHeaders() }),
       fetch(`${SUPABASE_URL}/rest/v1/presences`, { headers: getHeaders() })
@@ -72,7 +72,6 @@ async function loadData() {
     const loggedUserJson = localStorage.getItem("cca_user");
     if (loggedUserJson) {
       const savedUser = JSON.parse(loggedUserJson);
-      // Garante que os dados locais do usuário ativo estejam atualizados com o banco
       const matched = members.find(m => m.id === savedUser.id);
       if (matched) {
         currentUserId = matched.id;
@@ -98,9 +97,9 @@ function checkAuth() {
   const token = localStorage.getItem("cca_user");
   const overlay = document.getElementById("auth-screen-overlay");
   if (!token) {
-    overlay.classList.add("active");
+    if (overlay) overlay.classList.add("active");
   } else {
-    overlay.classList.remove("active");
+    if (overlay) overlay.classList.remove("active");
   }
 }
 
@@ -122,7 +121,6 @@ function setupUserSelector() {
 
   updateUserBadge();
 
-  // Permite chaveamento rápido no simulador da barra lateral
   select.onchange = (e) => {
     currentUserId = e.target.value;
     const novoUsuarioContexto = members.find(m => m.id === currentUserId);
@@ -154,7 +152,6 @@ function updateUserBadge() {
   applyPermissions();
 }
 
-// Controla as permissões de acesso baseando-se no access_level gravado no banco de dados
 function applyPermissions() {
   const currentMember = members.find(m => m.id === currentUserId);
   const accessLevel = currentMember ? (currentMember.access_level || "Membro") : "Membro";
@@ -212,7 +209,6 @@ function applyPermissions() {
   }
 }
 
-// Configura o Roteamento SPA por Abas
 function setupNavigation() {
   const navItems = document.querySelectorAll(".nav-item");
   navItems.forEach(item => {
@@ -290,10 +286,11 @@ function renderActiveView(tabId = null) {
 
 function updateLiveDate() {
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  document.getElementById("live-date").textContent = new Date().toLocaleDateString('pt-BR', options);
+  const liveDateEl = document.getElementById("live-date");
+  if (liveDateEl) liveDateEl.textContent = new Date().toLocaleDateString('pt-BR', options);
 }
 
-// Auxiliares globais de Modais e Lightbox
+// Auxiliares de Modais
 function openModal(id) {
   const m = document.getElementById(id);
   if (m) {
@@ -306,12 +303,16 @@ function closeModal(id) {
   if (m) m.classList.remove("active");
 }
 function openLightbox(url, caption) {
-  document.getElementById("lightbox-img").src = url;
-  document.getElementById("lightbox-caption").textContent = caption;
-  document.getElementById("lightbox").classList.add("active");
+  const lbImg = document.getElementById("lightbox-img");
+  const lbCap = document.getElementById("lightbox-caption");
+  const lb = document.getElementById("lightbox");
+  if (lbImg) lbImg.src = url;
+  if (lbCap) lbCap.textContent = caption;
+  if (lb) lb.classList.add("active");
 }
 function closeLightbox() {
-  document.getElementById("lightbox").classList.remove("active");
+  const lb = document.getElementById("lightbox");
+  if (lb) lb.classList.remove("active");
 }
 function formatDateShort(dateStr) {
   if(!dateStr) return "";
@@ -319,7 +320,6 @@ function formatDateShort(dateStr) {
   return `${day}/${month}`;
 }
 
-// Preenche listas dinâmicas de seleção no formulário de escala
 function populateEventSelectors() {
   const songsBox = document.getElementById("event-songs-checkboxes");
   if (songsBox) {
@@ -344,10 +344,11 @@ function populateEventSelectors() {
 
 // ==================== RENDERIZADORES DE ABAS ====================
 
-// 1. DASHBOARD
 function renderDashboard() {
-  document.getElementById("stat-songs-count").textContent = `${songs.length} Músicas`;
-  document.getElementById("stat-members-count").textContent = `${members.length} Integrantes`;
+  const songCountEl = document.getElementById("stat-songs-count");
+  const memCountEl = document.getElementById("stat-members-count");
+  if (songCountEl) songCountEl.textContent = `${songs.length} Músicas`;
+  if (memCountEl) memCountEl.textContent = `${members.length} Integrantes`;
 
   const todayStr = new Date().toISOString().split("T")[0];
   const sortedEvents = [...events].sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -358,80 +359,437 @@ function renderDashboard() {
   }
 
   if (!nextEvent) {
-    document.getElementById("dash-event-title").textContent = "Nenhum evento agendado.";
-    document.getElementById("dash-event-time").textContent = "-";
-    document.getElementById("dash-event-arrival").textContent = "-";
-    document.getElementById("dash-event-dress").textContent = "-";
-    document.getElementById("dash-event-colors").innerHTML = "";
-    document.getElementById("dash-event-scale-list").innerHTML = "<li>Nenhum integrante escalado.</li>";
-    document.getElementById("dash-event-songs-list").innerHTML = "<p class='text-secondary'>Nenhuma música adicionada.</p>";
-    document.getElementById("stat-next-date").textContent = "Sem Escala";
-    document.getElementById("dash-presence-actions").innerHTML = "";
+    if(document.getElementById("dash-event-title")) document.getElementById("dash-event-title").textContent = "Nenhum evento agendado.";
+    if(document.getElementById("stat-next-date")) document.getElementById("stat-next-date").textContent = "Sem Escala";
     return;
   }
 
-  document.getElementById("stat-next-date").textContent = formatDateShort(nextEvent.date);
-  document.getElementById("dash-event-title").textContent = `${nextEvent.title} (${nextEvent.type})`;
-  document.getElementById("dash-event-time").textContent = `${nextEvent.time.substring(0,5)}h`;
-  document.getElementById("dash-event-arrival").textContent = `${nextEvent.arrival_time.substring(0,5)}h`;
-  document.getElementById("dash-event-dress").textContent = nextEvent.dress_code || "Livre";
+  if(document.getElementById("stat-next-date")) document.getElementById("stat-next-date").textContent = formatDateShort(nextEvent.date);
+  if(document.getElementById("dash-event-title")) document.getElementById("dash-event-title").textContent = `${nextEvent.title} (${nextEvent.type})`;
+  if(document.getElementById("dash-event-time")) document.getElementById("dash-event-time").textContent = `${nextEvent.time.substring(0,5)}h`;
+  if(document.getElementById("dash-event-arrival")) document.getElementById("dash-event-arrival").textContent = `${nextEvent.arrival_time.substring(0,5)}h`;
+  if(document.getElementById("dash-event-dress")) document.getElementById("dash-event-dress").textContent = nextEvent.dress_code || "Livre";
 
   const colorsContainer = document.getElementById("dash-event-colors");
-  colorsContainer.innerHTML = "";
-  if (nextEvent.dress_colors && nextEvent.dress_colors.length > 0) {
-    nextEvent.dress_colors.forEach(color => {
-      const dot = document.createElement("div");
-      dot.className = "color-dot";
-      dot.style.backgroundColor = color.trim();
-      dot.title = color.trim();
-      colorsContainer.appendChild(dot);
-    });
+  if (colorsContainer) {
+    colorsContainer.innerHTML = "";
+    if (nextEvent.dress_colors && nextEvent.dress_colors.length > 0) {
+      nextEvent.dress_colors.forEach(color => {
+        const dot = document.createElement("div");
+        dot.className = "color-dot";
+        dot.style.backgroundColor = color.trim();
+        colorsContainer.appendChild(dot);
+      });
+    }
   }
 
   const presenceActions = document.getElementById("dash-presence-actions");
-  presenceActions.innerHTML = "";
-  
-  const isScaled = nextEvent.team && nextEvent.team.some(t => t.memberId === currentUserId);
-  const currentPresence = nextEvent.presences[currentUserId];
+  if (presenceActions) {
+    presenceActions.innerHTML = "";
+    const isScaled = nextEvent.team && nextEvent.team.some(t => t.memberId === currentUserId);
+    const currentPresence = nextEvent.presences[currentUserId];
 
-  if (!isScaled) {
-    presenceActions.innerHTML = `<span class="presence-status-banner pending"><i class="fa-solid fa-circle-exclamation"></i> Você não está escalado</span>`;
-  } else {
-    const status = currentPresence ? currentPresence.status : "pending";
-    const reason = currentPresence ? currentPresence.reason : "";
-
-    if (status === "confirmed") {
-      presenceActions.innerHTML = `
-        <span class="presence-status-banner confirmed"><i class="fa-solid fa-circle-check"></i> Presença Confirmada!</span>
-        <button class="btn btn-xs btn-outline text-danger" onclick="triggerAbsenceModal('${nextEvent.id}', '${currentUserId}')">
-          <i class="fa-solid fa-circle-xmark"></i> Alterar para Falta
-        </button>
-      `;
-    } else if (status === "declined") {
-      presenceActions.innerHTML = `
-        <span class="presence-status-banner declined" title="Justificativa: ${reason}"><i class="fa-solid fa-circle-xmark"></i> Ausente Justificado</span>
-        <button class="btn btn-xs btn-primary" onclick="setPresence('${nextEvent.id}', '${currentUserId}', 'confirmed')">
-          <i class="fa-solid fa-circle-check"></i> Mudar para Confirmado
-        </button>
-      `;
+    if (!isScaled) {
+      presenceActions.innerHTML = `<span class="presence-status-banner pending"><i class="fa-solid fa-circle-exclamation"></i> Você não está escalado</span>`;
     } else {
-      presenceActions.innerHTML = `
-        <button class="btn btn-primary" onclick="setPresence('${nextEvent.id}', '${currentUserId}', 'confirmed')">
-          <i class="fa-solid fa-circle-check"></i> Confirmar Presença
-        </button>
-        <button class="btn btn-secondary text-danger" onclick="triggerAbsenceModal('${nextEvent.id}', '${currentUserId}')">
-          <i class="fa-solid fa-circle-xmark"></i> Recusar / Falta
-        </button>
-      `;
+      const status = currentPresence ? currentPresence.status : "pending";
+      if (status === "confirmed") {
+        presenceActions.innerHTML = `
+          <span class="presence-status-banner confirmed"><i class="fa-solid fa-circle-check"></i> Presença Confirmada!</span>
+          <button class="btn btn-xs btn-outline text-danger" onclick="triggerAbsenceModal('${nextEvent.id}', '${currentUserId}')">Alterar para Falta</button>
+        `;
+      } else if (status === "declined") {
+        presenceActions.innerHTML = `
+          <span class="presence-status-banner declined"><i class="fa-solid fa-circle-xmark"></i> Ausente Justificado</span>
+          <button class="btn btn-xs btn-primary" onclick="setPresence('${nextEvent.id}', '${currentUserId}', 'confirmed')">Mudar para Confirmado</button>
+        `;
+      } else {
+        presenceActions.innerHTML = `
+          <button class="btn btn-primary" onclick="setPresence('${nextEvent.id}', '${currentUserId}', 'confirmed')">Confirmar Presença</button>
+          <button class="btn btn-secondary text-danger" onclick="triggerAbsenceModal('${nextEvent.id}', '${currentUserId}')">Recusar / Falta</button>
+        `;
+      }
     }
   }
 
   const scaleList = document.getElementById("dash-event-scale-list");
-  scaleList.innerHTML = "";
-  
-  if(nextEvent.team) {
-    nextEvent.team.forEach(t => {
-      const m = members.find(member => member.id === t.memberId);
-      if (!m) return;
+  if (scaleList) {
+    scaleList.innerHTML = "";
+    if(nextEvent.team) {
+      nextEvent.team.forEach(t => {
+        const m = members.find(member => member.id === t.memberId);
+        if (!m) return;
+        const presenceInfo = nextEvent.presences[m.id] || { status: "pending" };
+        const li = document.createElement("li");
+        li.className = "scale-member-item";
+        li.innerHTML = `
+          <div class="scale-member-left">
+            <img class="scale-member-avatar" src="${m.photo_url || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}">
+            <div class="scale-member-info"><h4>${m.name}</h4><span>${t.role}</span></div>
+          </div>
+          <span class="status-indicator ${presenceInfo.status}">${presenceInfo.status === 'confirmed' ? 'Confirmado' : presenceInfo.status === 'declined' ? 'Ausente' : 'Pendente'}</span>
+        `;
+        scaleList.appendChild(li);
+      });
+    }
+  }
 
-      const presenceInfo = next
+  const songsList = document.getElementById("dash-event-songs-list");
+  if (songsList) {
+    songsList.innerHTML = "";
+    if (nextEvent.songs && nextEvent.songs.length > 0) {
+      nextEvent.songs.forEach(songId => {
+        const s = songs.find(song => song.id === songId);
+        if (!s) return;
+        const card = document.createElement("div");
+        card.className = "song-link-card";
+        card.onclick = () => openCifraViewer(s.id);
+        card.innerHTML = `<h4>${s.title}</h4><span>${s.artist}</span>`;
+        songsList.appendChild(card);
+      });
+    }
+  }
+}
+
+function renderEscalas() {
+  const container = document.getElementById("events-cards-container");
+  if (!container) return;
+  container.innerHTML = "";
+
+  events.forEach(ev => {
+    const card = document.createElement("div");
+    card.className = "card event-card";
+    card.innerHTML = `<h3>${ev.title}</h3><p>Data: ${formatDateShort(ev.date)}</p>`;
+    container.appendChild(card);
+  });
+}
+
+function renderCifras() {
+  const container = document.getElementById("cifras-cards-container");
+  if (!container) return;
+  container.innerHTML = "";
+
+  const searchQuery = document.getElementById("search-cifras") ? document.getElementById("search-cifras").value.toLowerCase() : "";
+
+  const filtered = songs.filter(s => s.title.toLowerCase().includes(searchQuery));
+  filtered.forEach(s => {
+    const card = document.createElement("div");
+    card.className = "card cifra-card";
+    card.onclick = () => openCifraViewer(s.id);
+    card.innerHTML = `<h3>${s.title}</h3><p>${s.artist}</p>`;
+    container.appendChild(card);
+  });
+
+  const sInput = document.getElementById("search-cifras");
+  if (sInput && !sInput.dataset.hasListener) {
+    sInput.addEventListener("input", renderCifras);
+    sInput.dataset.hasListener = "true";
+  }
+}
+
+function renderGaleria() {
+  const container = document.getElementById("gallery-container");
+  if (!container) return;
+  container.innerHTML = "";
+
+  photos.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "gallery-item";
+    div.onclick = () => openLightbox(p.url, p.caption);
+    div.innerHTML = `<img src="${p.url}"><div class="gallery-caption">${p.caption}</div>`;
+    container.appendChild(div);
+  });
+}
+
+function renderMembros() {
+  const container = document.getElementById("members-container");
+  if (!container) return;
+  container.innerHTML = "";
+
+  members.forEach(m => {
+    const card = document.createElement("div");
+    card.className = "card member-card";
+    card.innerHTML = `<h3>${m.name}</h3><p>${m.instrument}</p>`;
+    container.appendChild(card);
+  });
+}
+
+async function setPresence(eventId, memberId, status, reason = "") {
+  const body = { event_id: eventId, member_id: memberId, status: status, reason: reason, updated_at: new Date().toISOString() };
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/presences`, {
+      method: "POST",
+      headers: { ...getHeaders(), "On-Conflict": "event_id,member_id" },
+      body: JSON.stringify(body)
+    });
+    await loadData();
+  } catch (err) { console.error(err); }
+}
+
+function triggerAbsenceModal(eventId, memberId) {
+  if(document.getElementById("absence-event-id")) document.getElementById("absence-event-id").value = eventId;
+  if(document.getElementById("absence-member-id")) document.getElementById("absence-member-id").value = memberId;
+  openModal("modal-absence-reason");
+}
+
+function toggleCustomAbsenceInput() {
+  const select = document.getElementById("absence-select-reason");
+  const group = document.getElementById("custom-absence-group");
+  if (select && group) {
+    if (select.value === "Outro") group.classList.remove("hidden");
+    else group.classList.add("hidden");
+  }
+}
+
+// ================= VISUALIZADOR DE CIFRAS =================
+
+function openCifraViewer(songId) {
+  const song = songs.find(s => s.id === songId);
+  if (!song) return;
+  currentViewingSong = song;
+  originalSongChords = song.chords;
+  if(document.getElementById("view-song-title")) document.getElementById("view-song-title").textContent = song.title;
+  if(document.getElementById("view-song-artist")) document.getElementById("view-song-artist").textContent = song.artist;
+  renderParsedCifra();
+  if(document.getElementById("cifra-viewer-overlay")) document.getElementById("cifra-viewer-overlay").classList.add("active");
+}
+
+function closeCifraViewer() {
+  if(document.getElementById("cifra-viewer-overlay")) document.getElementById("cifra-viewer-overlay").classList.remove("active");
+}
+
+function renderParsedCifra() {
+  if (!currentViewingSong) return;
+  const output = originalSongChords.replace(/\[(.*?)\]/g, '<span class="chord-highlight">$1</span>');
+  if(document.getElementById("cifra-sheet-rendered")) document.getElementById("cifra-sheet-rendered").innerHTML = output;
+}
+
+// ================= CONFIGURAÇÃO SEGURA DOS FORMULÁRIOS =================
+
+function setupForms() {
+  // 1. Envio de Novas Cifras
+  const formSong = document.getElementById("form-add-song");
+  if (formSong) {
+    formSong.onsubmit = async (e) => {
+      e.preventDefault();
+      const body = {
+        title: document.getElementById("song-title").value,
+        artist: document.getElementById("song-artist").value,
+        key: document.getElementById("song-key").value,
+        rhythm: document.getElementById("song-rhythm").value,
+        chords: document.getElementById("song-chords").value
+      };
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/songs`, {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify(body)
+        });
+        if (res.ok) {
+          alert("Música adicionada!");
+          closeModal("modal-add-song");
+          formSong.reset();
+          await loadData();
+        }
+      } catch (err) { console.error(err); }
+    };
+  }
+
+  // 2. Envio de Fotos (Upload Físico Real para o Bucket Storage)
+  const formPhoto = document.getElementById("form-add-photo");
+  if (formPhoto) {
+    formPhoto.onsubmit = async (e) => {
+      e.preventDefault();
+      const caption = document.getElementById("photo-caption").value;
+      const fileInput = document.getElementById("photo-file");
+      const submitBtn = document.getElementById("btn-submit-photo");
+
+      if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        alert("Por favor, selecione uma imagem.");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+
+      try {
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = "Enviando para o servidor...";
+        }
+
+        // Envia o binário físico para o bucket chamado 'photos'
+        const { data, error } = await supabase.storage
+          .from('photos')
+          .upload(fileName, file, { cacheControl: '3600', upsert: false });
+
+        if (error) throw error;
+
+        // Recupera link da CDN pública do Supabase
+        const { data: urlData } = supabase.storage.from('photos').getPublicUrl(fileName);
+        const publicUrl = urlData.publicUrl;
+
+        // Registra metadados no banco relacional
+        const resMeta = await fetch(`${SUPABASE_URL}/rest/v1/photos`, {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({ caption: caption, url: publicUrl })
+        });
+
+        if (resMeta.ok) {
+          alert("Foto adicionada com sucesso!");
+          closeModal("modal-add-photo");
+          formPhoto.reset();
+          await loadData();
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Erro no upload da imagem físico.");
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Adicionar à Galeria";
+        }
+      }
+    };
+  }
+
+  // 3. Envio de Escalas / Eventos
+  const formEvent = document.getElementById("form-add-event");
+  if (formEvent) {
+    formEvent.onsubmit = async (e) => {
+      e.preventDefault();
+      const checkedSongs = Array.from(document.querySelectorAll('input[name="event-songs-select"]:checked')).map(cb => cb.value);
+      const checkedMembers = Array.from(document.querySelectorAll('input[name="event-members-select"]:checked')).map(cb => ({
+        memberId: cb.value,
+        role: document.getElementById(`role-for-${cb.value}`).value || "Músico"
+      }));
+
+      const body = {
+        title: document.getElementById("event-title").value,
+        type: document.getElementById("event-type").value,
+        date: document.getElementById("event-date").value,
+        time: document.getElementById("event-time").value,
+        arrival_time: document.getElementById("event-arrival").value,
+        dress_code: document.getElementById("event-dress").value,
+        songs: checkedSongs,
+        team: checkedMembers
+      };
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/events`, {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify(body)
+        });
+        if (res.ok) {
+          alert("Evento escalado!");
+          closeModal("modal-add-event");
+          formEvent.reset();
+          await loadData();
+        }
+      } catch (err) { console.error(err); }
+    };
+  }
+}
+
+// ================= AUTENTICAÇÃO E CADASTRO COMPLETO =================
+
+function toggleAuthForms(view) {
+  const loginCard = document.getElementById("auth-login-card");
+  const registerCard = document.getElementById("auth-register-card");
+  if (view === 'register') {
+    if(loginCard) loginCard.classList.add("hidden");
+    if(registerCard) registerCard.classList.remove("hidden");
+  } else {
+    if(registerCard) registerCard.classList.add("hidden");
+    if(loginCard) loginCard.classList.remove("hidden");
+  }
+}
+
+function setupAuthForms() {
+  const regAccess = document.getElementById("register-access");
+  if(regAccess) {
+    regAccess.onchange = (e) => {
+      const group = document.getElementById("register-admin-code-group");
+      if (group) {
+        if (e.target.value === "Administrador") group.classList.remove("hidden");
+        else group.classList.add("hidden");
+      }
+    };
+  }
+
+  const fLogin = document.getElementById("form-auth-login");
+  if(fLogin) {
+    fLogin.onsubmit = (e) => {
+      e.preventDefault();
+      const email = document.getElementById("login-email").value.trim().toLowerCase();
+      const pass = document.getElementById("login-password").value;
+      const errorMsg = document.getElementById("login-error-msg");
+
+      const matched = members.find(m => m.email.toLowerCase() === email && m.password === pass);
+      if (matched) {
+        if(errorMsg) errorMsg.classList.add("hidden");
+        localStorage.setItem("cca_user", JSON.stringify(matched));
+        currentUserId = matched.id;
+        if(document.getElementById("auth-screen-overlay")) document.getElementById("auth-screen-overlay").classList.remove("active");
+        fLogin.reset();
+        setupUserSelector();
+        renderActiveView();
+      } else {
+        if(errorMsg) errorMsg.classList.remove("hidden");
+      }
+    };
+  }
+
+  const fRegister = document.getElementById("form-auth-register");
+  if(fRegister) {
+    fRegister.onsubmit = async (e) => {
+      e.preventDefault();
+      const p1 = document.getElementById("register-password").value;
+      const p2 = document.getElementById("register-confirm").value;
+      if (p1 !== p2) {
+        alert("As senhas digitadas não batem!");
+        return;
+      }
+
+      const accessLevel = document.getElementById("register-access").value;
+      if (accessLevel === "Administrador") {
+        const code = document.getElementById("register-admin-code").value;
+        if (code !== ADMIN_SECURITY_CODE) {
+          alert("Código administrativo incorreto.");
+          return;
+        }
+      }
+
+      const userEmailPrefix = document.getElementById("register-email-user").value.trim().toLowerCase();
+      const fullEmail = `${userEmailPrefix}@ccamusic.com.br`;
+
+      const body = {
+        name: document.getElementById("register-name").value,
+        nickname: document.getElementById("register-nickname").value,
+        instrument: document.getElementById("register-instrument").value,
+        role: document.getElementById("register-role").value,
+        access_level: accessLevel,
+        email: fullEmail,
+        phone: document.getElementById("register-phone").value,
+        password: p1,
+        photo_url: ""
+      };
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/members`, {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify(body)
+        });
+        if (res.ok) {
+          alert("Cadastro efetuado com sucesso!");
+          fRegister.reset();
+          window.location.reload();
+        }
+      } catch(err) { console.error(err); }
+    };
+  }
+}
