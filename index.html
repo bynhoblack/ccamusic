@@ -51,7 +51,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <button class="btn-logout" onclick="logoutUser()" title="Encerrar sessão de acesso ao portal">
+        <button class="btn-logout" onclick="localStorage.removeItem('cca_user'); window.location.reload();" title="Encerrar sessão de acesso ao portal">
           <i class="fa-solid fa-right-from-bracket"></i> Sair do Portal
         </button>
         <p>Portal CCA Music v1.0</p>
@@ -71,7 +71,7 @@
         <div class="header-actions">
           <div class="date-display">
             <i class="fa-regular fa-calendar"></i>
-            <span id="live-date">26 de Maio, 2026</span>
+            <span id="live-date">Carregando data...</span>
           </div>
         </div>
       </header>
@@ -87,21 +87,21 @@
               <div class="stat-icon purple"><i class="fa-solid fa-calendar-check"></i></div>
               <div class="stat-info">
                 <h3>Próximo Encontro</h3>
-                <p id="stat-next-date">31 de Maio</p>
+                <p id="stat-next-date">Carregando...</p>
               </div>
             </div>
             <div class="stat-card">
               <div class="stat-icon blue"><i class="fa-solid fa-music"></i></div>
               <div class="stat-info">
                 <h3>Cifras Ativas</h3>
-                <p id="stat-songs-count">3 Músicas</p>
+                <p id="stat-songs-count">0 Músicas</p>
               </div>
             </div>
             <div class="stat-card">
               <div class="stat-icon green"><i class="fa-solid fa-user-group"></i></div>
               <div class="stat-info">
                 <h3>Membros Ativos</h3>
-                <p id="stat-members-count">6 Integrantes</p>
+                <p id="stat-members-count">0 Integrantes</p>
               </div>
             </div>
           </div>
@@ -192,7 +192,7 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="search-cifras" placeholder="Buscar por música, artista ou tom...">
               </div>
-              <button class="btn btn-secondary btn-cifraclub" onclick="searchOnCifraClub()" title="Buscar artista ou música no Cifra Club">
+              <button class="btn btn-secondary btn-cifraclub" onclick="window.open('https://www.cifraclub.com.br', '_blank')" title="Buscar artista ou música no Cifra Club">
                 <i class="fa-solid fa-arrow-up-right-from-square"></i> Cifra Club
               </button>
               <select id="filter-rhythm" class="filter-dropdown">
@@ -291,7 +291,7 @@
           <input type="text" id="event-dress" placeholder="Ex: Tons pastéis, Camiseta preta">
         </div>
         <div class="form-group">
-          <label>Cores da Paleta (Selecione ou adicione códigos em Hex separado por vírgula)</label>
+          <label for="event-colors-hex">Cores da Paleta (Códigos Hex separados por vírgula)</label>
           <input type="text" id="event-colors-hex" placeholder="#ff0000, #000000">
         </div>
         
@@ -378,19 +378,8 @@
           <input type="text" id="photo-caption" required placeholder="Ex: Ensaio de Sábado">
         </div>
         <div class="form-group">
-          <label for="photo-url-type">Origem da Imagem</label>
-          <select id="photo-url-type" onchange="togglePhotoInput()">
-            <option value="url">Link Externo (URL)</option>
-            <option value="file">Enviar Arquivo local</option>
-          </select>
-        </div>
-        <div class="form-group" id="photo-url-group">
           <label for="photo-url">Endereço da Imagem (URL)</label>
-          <input type="url" id="photo-url" placeholder="https://images.unsplash.com/photo-...">
-        </div>
-        <div class="form-group hidden" id="photo-file-group">
-          <label for="photo-file">Escolha um Arquivo de Foto</label>
-          <input type="file" id="photo-file" accept="image/*">
+          <input type="url" id="photo-url" required placeholder="https://images.unsplash.com/photo-...">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-photo')">Cancelar</button>
@@ -400,51 +389,19 @@
     </div>
   </div>
 
-  <!-- Modal: Novo Integrante -->
+  <!-- Modal: Novo Integrante Administrativo -->
   <div id="modal-add-member" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-user-plus"></i> Cadastrar Integrante</h3>
+        <h3><i class="fa-solid fa-user-plus"></i> Painel de Convite Administrativo</h3>
         <button class="btn-close-modal" onclick="closeModal('modal-add-member')">&times;</button>
       </div>
-      <form id="form-add-member" class="modal-form">
-        <div class="form-group">
-          <label for="member-name">Nome Completo</label>
-          <input type="text" id="member-name" required placeholder="Ex: João da Silva">
-        </div>
-        <div class="form-group">
-          <label for="member-instrument">Instrumento Principal</label>
-          <input type="text" id="member-instrument" required placeholder="Ex: Guitarra, Vocal, Violino">
-        </div>
-        <div class="form-row-2">
-          <div class="form-group">
-            <label for="member-email">E-mail</label>
-            <input type="email" id="member-email" placeholder="joao@ccamusic.com">
-          </div>
-          <div class="form-group">
-            <label for="member-phone">Celular</label>
-            <input type="tel" id="member-phone" placeholder="(11) 99999-9999">
-          </div>
-        </div>
-        <div class="form-row-2">
-          <div class="form-group">
-            <label for="member-role">Cargo/Função no Grupo</label>
-            <select id="member-role">
-              <option value="Ministro">Ministro</option>
-              <option value="Backing Vocal">Backing Vocal</option>
-              <option value="Músico">Músico</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="member-photo">Foto de Perfil (URL ou em branco para avatar)</label>
-            <input type="url" id="member-photo" placeholder="https://images.unsplash.com/photo-...">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-member')">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Cadastrar</button>
-        </div>
-      </form>
+      <div class="modal-body-wrapper" style="padding: 1rem 0;">
+         <p class="text-secondary font-sm">Novos integrantes efetuam o auto-cadastro diretamente clicando em <strong>"Cadastre-se aqui"</strong> na tela inicial de login do sistema.</p>
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-primary" onclick="closeModal('modal-add-member')" style="width: 100%;">Entendido</button>
+      </div>
     </div>
   </div>
 
@@ -515,7 +472,7 @@
               <button class="btn btn-xs" onclick="changeKey(-1)"><i class="fa-solid fa-minus"></i></button>
               <span id="current-key-display">C</span>
               <button class="btn btn-xs" onclick="changeKey(1)"><i class="fa-solid fa-plus"></i></button>
-              <button class="btn btn-xs btn-outline" onclick="resetKey()">Original</button>
+              <button class="btn btn-xs btn-outline" onclick="currentKeyOffset=0; renderParsedCifra();">Original</button>
             </div>
           </div>
 
@@ -547,7 +504,6 @@
       </header>
 
       <div class="cifra-viewer-body" id="cifra-pre-body">
-        <!-- Rendered parsed chord sheet pre element goes here -->
         <pre id="cifra-sheet-rendered"></pre>
       </div>
     </div>
@@ -600,10 +556,6 @@
             <input type="text" id="register-nickname" required placeholder="Ex: Luquinhas, Gabi">
           </div>
         </div>
-        <div class="form-group">
-          <label for="register-photo"><i class="fa-regular fa-image"></i> Foto de Perfil (Opcional)</label>
-          <input type="file" id="register-photo" accept="image/*" style="padding: 0.5rem 1rem;">
-        </div>
         <div class="form-row-2">
           <div class="form-group">
             <label for="register-instrument"><i class="fa-solid fa-guitar"></i> Instrumento Principal</label>
@@ -639,7 +591,7 @@
           </div>
           <div class="form-group">
             <label for="register-phone"><i class="fa-solid fa-phone"></i> Celular / WhatsApp</label>
-            <input type="tel" id="register-phone" required placeholder="Ex: 11999998888">
+            <input type="tel" id="register-phone" required placeholder="Ex: 21999998888">
           </div>
         </div>
         <div class="form-row-2">
@@ -663,7 +615,6 @@
   </div>
 
   <!-- Scripts -->
-  <script src="seedData.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
