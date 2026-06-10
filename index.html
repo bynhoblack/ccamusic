@@ -23,7 +23,7 @@
       <div class="user-selector-box">
         <label for="current-user-select"><i class="fa-solid fa-user-circle"></i> Simular Membro:</label>
         <select id="current-user-select" class="user-dropdown">
-          </select>
+        </select>
         <span class="user-badge" id="user-role-badge">Líder</span>
       </div>
 
@@ -119,8 +119,7 @@
                       <div>
                         <strong>Paleta de Roupas:</strong>
                         <span id="dash-event-dress">Carregando...</span>
-                        <div class="color-palette-preview" id="dash-event-colors">
-                          </div>
+                        <div class="color-palette-preview" id="dash-event-colors"></div>
                       </div>
                     </div>
                   </div>
@@ -128,27 +127,23 @@
                   <div class="quick-presence-box card">
                     <h4><i class="fa-regular fa-square-check"></i> Sua Confirmação de Presença:</h4>
                     <p class="text-secondary font-sm">Responda para ajudar no planejamento musical.</p>
-                    <div class="quick-presence-actions" id="dash-presence-actions">
-                      </div>
+                    <div class="quick-presence-actions" id="dash-presence-actions"></div>
                   </div>
                 </div>
 
                 <div class="highlight-scale-section">
                   <h3><i class="fa-solid fa-user-tag"></i> Integrantes Escalados</h3>
-                  <ul class="scale-list" id="dash-event-scale-list">
-                    </ul>
+                  <ul class="scale-list" id="dash-event-scale-list"></ul>
                 </div>
 
                 <div class="highlight-songs-section">
                   <h3><i class="fa-solid fa-guitar"></i> Músicas do Dia</h3>
-                  <div class="songs-list-links" id="dash-event-songs-list">
-                    </div>
+                  <div class="songs-list-links" id="dash-event-songs-list"></div>
                 </div>
               </div>
             </div>
           </div>
         </section>
-
 
         <section id="view-escalas" class="tab-view">
           <div class="section-actions-bar">
@@ -157,11 +152,8 @@
               <i class="fa-solid fa-calendar-plus"></i> Novo Evento
             </button>
           </div>
-
-          <div class="events-grid" id="events-cards-container">
-            </div>
+          <div class="events-grid" id="events-cards-container"></div>
         </section>
-
 
         <section id="view-cifras" class="tab-view">
           <div class="section-actions-bar">
@@ -185,11 +177,8 @@
               <i class="fa-solid fa-file-circle-plus"></i> Adicionar Música
             </button>
           </div>
-
-          <div class="cifras-list-grid" id="cifras-cards-container">
-            </div>
+          <div class="cifras-list-grid" id="cifras-cards-container"></div>
         </section>
-
 
         <section id="view-galeria" class="tab-view">
           <div class="section-actions-bar">
@@ -198,11 +187,8 @@
               <i class="fa-solid fa-image-portrait"></i> Nova Foto
             </button>
           </div>
-
-          <div class="gallery-masonry" id="gallery-container">
-            </div>
+          <div class="gallery-masonry" id="gallery-container"></div>
         </section>
-
 
         <section id="view-membros" class="tab-view">
           <div class="section-actions-bar">
@@ -211,9 +197,7 @@
               <i class="fa-solid fa-user-plus"></i> Novo Integrante
             </button>
           </div>
-
-          <div class="members-grid" id="members-container">
-            </div>
+          <div class="members-grid" id="members-container"></div>
         </section>
 
       </div>
@@ -264,19 +248,14 @@
           <label for="event-colors-hex">Cores da Paleta (Códigos Hex separados por vírgula)</label>
           <input type="text" id="event-colors-hex" placeholder="#ff0000, #000000">
         </div>
-        
         <div class="form-group">
           <label>Selecionar Músicas para o Repertório</label>
-          <div class="songs-checkboxes-container" id="event-songs-checkboxes">
-            </div>
+          <div class="songs-checkboxes-container" id="event-songs-checkboxes"></div>
         </div>
-
         <div class="form-group">
           <label>Escalar Integrantes e Funções</label>
-          <div class="scale-selector-container" id="event-team-selector">
-            </div>
+          <div class="scale-selector-container" id="event-team-selector"></div>
         </div>
-
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-event')">Cancelar</button>
           <button type="submit" class="btn btn-primary">Salvar Evento</button>
@@ -344,12 +323,12 @@
           <input type="text" id="photo-caption" required placeholder="Ex: Ensaio de Sábado">
         </div>
         <div class="form-group">
-          <label for="photo-url">Endereço da Imagem (URL)</label>
-          <input type="url" id="photo-url" required placeholder="https://images.unsplash.com/photo-...">
+          <label for="photo-file"><i class="fa-solid fa-images"></i> Selecionar Foto da Galeria</label>
+          <input type="file" id="photo-file" accept="image/*" required style="padding: 0.5rem; background: #fff; border-radius: 6px; border: 1px solid #ccc; width: 100%;">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-photo')">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Adicionar à Galeria</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-photo">Adicionar à Galeria</button>
         </div>
       </form>
     </div>
@@ -468,6 +447,7 @@
   </div>
 
   <div id="auth-screen-overlay" class="auth-screen-overlay active">
+    
     <div class="auth-card" id="auth-login-card">
       <div class="auth-logo-section">
         <img src="logo.jpg" alt="CCA Church Logo" class="auth-logo-img">
@@ -539,9 +519,9 @@
         <div class="form-row-2">
           <div class="form-group">
             <label for="register-email-user"><i class="fa-regular fa-envelope"></i> Usuário do E-mail</label>
-            <div class="email-input-group">
+            <div class="email-input-group" style="display: flex;">
               <input type="text" id="register-email-user" required placeholder="Ex: lucas.ramos" style="border-top-right-radius: 0; border-bottom-right-radius: 0; flex: 1;">
-              <span class="email-suffix">@ccamusic.com.br</span>
+              <span class="email-suffix" style="display: flex; align-items: center; padding: 0 10px; background: #eee; font-size: 0.85rem; border: 1px solid #ccc; border-left: none; border-top-right-radius: 4px; border-bottom-right-radius: 4px;">@ccamusic.com.br</span>
             </div>
           </div>
           <div class="form-group">
@@ -567,6 +547,7 @@
         Já possui uma conta? <button class="link-toggle" onclick="toggleAuthForms('login')">Faça login</button>
       </div>
     </div>
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
