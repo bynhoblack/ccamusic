@@ -218,7 +218,7 @@ h1, h2, h3, .logo-text {
 }
 
 .tab-view { display: none; }
-.tab-view.active { display: block; }
+.tab-view.active { display: block !important; }
 
 /* Botões */
 .btn {
@@ -537,7 +537,7 @@ h1, h2, h3, .logo-text {
   display: none;
 }
 
-.cifra-viewer-overlay.active { display: block; }
+.cifra-viewer-overlay.active { display: block !important; }
 
 .cifra-viewer-container {
   max-width: 900px;
@@ -688,8 +688,8 @@ h1, h2, h3, .logo-text {
 }
 
 .lightbox-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 .lightbox-content {
@@ -752,7 +752,7 @@ h1, h2, h3, .logo-text {
 }
 
 .modal-backdrop.active, .auth-screen-overlay.active {
-  display: flex;
+  display: flex !important;
 }
 
 .modal-card, .auth-card {

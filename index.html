@@ -291,7 +291,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="song-rhythm">Ritmo</label>
+            <label Mechanisms for list="song-rhythm">Ritmo</label>
             <input type="text" id="song-rhythm" required placeholder="Ex: Worship, Balada, Pop Rock">
           </div>
           <div class="form-group">
@@ -300,8 +300,8 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="song-chords">Letra Cifrada (Acordes entre colchetes, Ex: <code>[G] Deus [C] enviou</code>)</label>
-          <textarea id="song-chords" rows="12" required placeholder="Insira a letra com os acordes envoltos em [ ] nos locais exatos:&#10;&#10;[G] Deus enviou seu Filho a[C]mado&#10;Para mor[G]rer em meu lu[D]gar"></textarea>
+          <label for="song-chords">Letra Cifrada (Acordes entre colchetes)</label>
+          <textarea id="song-chords" rows="12" required placeholder="[G] Deus enviou seu Filho a[C]mado&#10;Para mor[G]rer em meu lu[D]gar"></textarea>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-song')">Cancelar</button>
@@ -380,4 +380,46 @@
           <input type="text" id="absence-custom-reason" placeholder="Descreva brevemente...">
         </div>
 
-        <div class="modal
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-absence-reason')">Cancelar</button>
+          <button type="submit" class="btn btn-danger">Confirmar Recusa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="cifra-viewer-overlay" class="cifra-viewer-overlay">
+    <div class="cifra-viewer-container">
+      <div class="cifra-viewer-header">
+        <div>
+          <h2 id="view-song-title">Título da Música</h2>
+          <p id="view-song-artist" class="text-secondary">Artista</p>
+        </div>
+        <div class="cifra-viewer-controls">
+          <div class="control-group">
+            <span class="control-label">Tom</span>
+            <div class="transposer-buttons">
+              <button class="btn btn-secondary btn-xs" onclick="transpose(-1)">-</button>
+              <span id="current-key-display">C</span>
+              <button class="btn btn-secondary btn-xs" onclick="transpose(1)">+</button>
+            </div>
+          </div>
+          <button class="btn btn-danger" onclick="closeCifraViewer()"><i class="fa-solid fa-xmark"></i> Fechar</button>
+        </div>
+      </div>
+      <div class="cifra-viewer-body">
+        <pre id="cifra-content-area">A cifra carregará aqui...</pre>
+      </div>
+    </div>
+  </div>
+
+  <div id="gallery-lightbox" class="lightbox-overlay" onclick="if(event.target === this) this.classList.remove('active')">
+    <span class="lightbox-close" onclick="document.getElementById('gallery-lightbox').classList.remove('active')">&times;</span>
+    <div class="lightbox-content">
+      <img id="lightbox-img" src="" alt="Visualização ampliada">
+      <div id="lightbox-caption">Legenda da Foto</div>
+    </div>
+  </div>
+
+</body>
+</html>
