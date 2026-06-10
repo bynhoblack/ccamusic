@@ -1,23 +1,9 @@
-// Portal CCA Music - Lógica de Negócios e Integração Supabase Nativa
-// =====================================================================
-
-// Configurações de Conexão com o Supabase
+// Configura as credenciais no cliente global já existente
 const SUPABASE_URL = 'https://ldsyjywdufhrblncadvj.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxkc3lqeXdkdWZocmJsbmNhZHZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMTM5ODMsImV4cCI6MjA5NjU4OTk4M30.9CO7Jziy-VItNFlpDGKlkrV6f_DPXwmq-Mdu5rRYaCk';
 
-let supabase;
-if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-} else if (typeof supabaseClient !== 'undefined') {
-    supabase = supabaseClient.createClient(SUPABASE_URL, SUPABASE_KEY);
-} else {
-    // Se a biblioteca do HTML falhar, inicializa diretamente pelo escopo global do CDN
-    supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-}
-
-if (!supabase) {
-    console.error("Aviso: A biblioteca do Supabase não foi carregada corretamente no index.html.");
-}
+// Sobrescreve a instância com a conexão do seu projeto
+supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const ADMIN_SECURITY_CODE = "CCA2026"; // Código de validação para novos administradores
 
