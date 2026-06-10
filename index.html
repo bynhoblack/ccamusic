@@ -4,20 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal CCA Music</title>
-  <!-- Google Fonts: Outfit (modern headlines) & Inter (clean UI text) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- FontAwesome for Premium Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- App Wrapper -->
   <div class="app-container">
     
-    <!-- Sidebar Navigation -->
     <aside class="sidebar">
       <div class="logo-area">
         <img src="logo.jpg" alt="CCA Church Logo" class="logo-img">
@@ -27,8 +23,7 @@
       <div class="user-selector-box">
         <label for="current-user-select"><i class="fa-solid fa-user-circle"></i> Simular Membro:</label>
         <select id="current-user-select" class="user-dropdown">
-          <!-- Populated by JavaScript -->
-        </select>
+          </select>
         <span class="user-badge" id="user-role-badge">Líder</span>
       </div>
 
@@ -59,10 +54,8 @@
       </div>
     </aside>
 
-    <!-- Main Content Area -->
     <main class="main-content">
       
-      <!-- Top header bar -->
       <header class="top-header">
         <div class="header-info">
           <h1 id="page-title">Painel Geral</h1>
@@ -76,12 +69,9 @@
         </div>
       </header>
 
-      <!-- View Containers -->
       <div class="view-viewport">
 
-        <!-- ================= DASHBOARD VIEW ================= -->
         <section id="view-dashboard" class="tab-view active">
-          <!-- Stats Summary Grid -->
           <div class="stats-grid">
             <div class="stat-card">
               <div class="stat-icon purple"><i class="fa-solid fa-calendar-check"></i></div>
@@ -106,7 +96,6 @@
             </div>
           </div>
 
-          <!-- Highlight Area (Próximo Evento Detalhado) -->
           <div class="dashboard-highlight">
             <div class="card highlight-card">
               <div class="card-header highlight-header">
@@ -115,7 +104,6 @@
               </div>
               
               <div class="highlight-grid">
-                <!-- Info do Evento -->
                 <div class="highlight-info-section">
                   <h3 id="dash-event-title" class="event-title-highlight">Carregando...</h3>
                   <div class="highlight-meta-list">
@@ -132,36 +120,29 @@
                         <strong>Paleta de Roupas:</strong>
                         <span id="dash-event-dress">Carregando...</span>
                         <div class="color-palette-preview" id="dash-event-colors">
-                          <!-- Color dots here -->
-                        </div>
+                          </div>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Quick Presence Selector -->
                   <div class="quick-presence-box card">
                     <h4><i class="fa-regular fa-square-check"></i> Sua Confirmação de Presença:</h4>
                     <p class="text-secondary font-sm">Responda para ajudar no planejamento musical.</p>
                     <div class="quick-presence-actions" id="dash-presence-actions">
-                      <!-- Filled by JS -->
-                    </div>
+                      </div>
                   </div>
                 </div>
 
-                <!-- Escala Integrantes -->
                 <div class="highlight-scale-section">
                   <h3><i class="fa-solid fa-user-tag"></i> Integrantes Escalados</h3>
                   <ul class="scale-list" id="dash-event-scale-list">
-                    <!-- Populated by JS -->
-                  </ul>
+                    </ul>
                 </div>
 
-                <!-- Músicas com Cifras -->
                 <div class="highlight-songs-section">
                   <h3><i class="fa-solid fa-guitar"></i> Músicas do Dia</h3>
                   <div class="songs-list-links" id="dash-event-songs-list">
-                    <!-- Populated by JS -->
-                  </div>
+                    </div>
                 </div>
               </div>
             </div>
@@ -169,7 +150,6 @@
         </section>
 
 
-        <!-- ================= ESCALAS VIEW ================= -->
         <section id="view-escalas" class="tab-view">
           <div class="section-actions-bar">
             <h2>Agenda de Escalas</h2>
@@ -179,12 +159,10 @@
           </div>
 
           <div class="events-grid" id="events-cards-container">
-            <!-- Populated by JS -->
-          </div>
+            </div>
         </section>
 
 
-        <!-- ================= CIFRAS VIEW ================= -->
         <section id="view-cifras" class="tab-view">
           <div class="section-actions-bar">
             <div class="search-filter-group">
@@ -209,12 +187,10 @@
           </div>
 
           <div class="cifras-list-grid" id="cifras-cards-container">
-            <!-- Populated by JS -->
-          </div>
+            </div>
         </section>
 
 
-        <!-- ================= GALERIA VIEW ================= -->
         <section id="view-galeria" class="tab-view">
           <div class="section-actions-bar">
             <h2>Galeria de Fotos do Grupo</h2>
@@ -224,12 +200,10 @@
           </div>
 
           <div class="gallery-masonry" id="gallery-container">
-            <!-- Populated by JS -->
-          </div>
+            </div>
         </section>
 
 
-        <!-- ================= INTEGRANTES VIEW ================= -->
         <section id="view-membros" class="tab-view">
           <div class="section-actions-bar">
             <h2>Membros do Grupo</h2>
@@ -239,17 +213,13 @@
           </div>
 
           <div class="members-grid" id="members-container">
-            <!-- Populated by JS -->
-          </div>
+            </div>
         </section>
 
       </div>
     </main>
   </div>
 
-  <!-- ================= MODAIS DA APLICAÇÃO ================= -->
-
-  <!-- Modal: Nova Escala / Evento -->
   <div id="modal-add-event" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-header">
@@ -298,15 +268,13 @@
         <div class="form-group">
           <label>Selecionar Músicas para o Repertório</label>
           <div class="songs-checkboxes-container" id="event-songs-checkboxes">
-            <!-- Populated by JS -->
-          </div>
+            </div>
         </div>
 
         <div class="form-group">
           <label>Escalar Integrantes e Funções</label>
           <div class="scale-selector-container" id="event-team-selector">
-            <!-- Populated by JS -->
-          </div>
+            </div>
         </div>
 
         <div class="modal-footer">
@@ -317,7 +285,6 @@
     </div>
   </div>
 
-  <!-- Modal: Nova Música / Cifra -->
   <div id="modal-add-song" class="modal-backdrop">
     <div class="modal-card modal-card-lg">
       <div class="modal-header">
@@ -365,7 +332,6 @@
     </div>
   </div>
 
-  <!-- Modal: Nova Foto -->
   <div id="modal-add-photo" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-header">
@@ -389,7 +355,6 @@
     </div>
   </div>
 
-  <!-- Modal: Novo Integrante Administrativo -->
   <div id="modal-add-member" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-header">
@@ -405,7 +370,6 @@
     </div>
   </div>
 
-  <!-- Modal: Registrar Motivo da Ausência / Falta -->
   <div id="modal-absence-reason" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-header">
@@ -445,7 +409,6 @@
     </div>
   </div>
 
-  <!-- Lightbox de Imagens -->
   <div id="lightbox" class="lightbox-backdrop" onclick="closeLightbox()">
     <button class="lightbox-close">&times;</button>
     <div class="lightbox-content" onclick="event.stopPropagation()">
@@ -454,7 +417,6 @@
     </div>
   </div>
 
-  <!-- ================= VISUALIZADOR DE CIFRAS INTERATIVO ================= -->
   <div id="cifra-viewer-overlay" class="cifra-viewer-overlay">
     <div class="cifra-viewer-container">
       <header class="cifra-viewer-header">
@@ -465,7 +427,6 @@
         </div>
         
         <div class="cifra-viewer-controls">
-          <!-- Transposer -->
           <div class="control-group">
             <span class="control-label"><i class="fa-solid fa-sliders"></i> Tom:</span>
             <div class="transposer-buttons">
@@ -476,7 +437,6 @@
             </div>
           </div>
 
-          <!-- Auto-scroll -->
           <div class="control-group">
             <span class="control-label"><i class="fa-solid fa-arrows-up-down"></i> Auto-Rolagem:</span>
             <div class="autoscroll-buttons">
@@ -486,7 +446,6 @@
             </div>
           </div>
 
-          <!-- Font Size -->
           <div class="control-group">
             <span class="control-label"><i class="fa-solid fa-font"></i> Tamanho:</span>
             <div class="font-buttons">
@@ -495,7 +454,6 @@
             </div>
           </div>
 
-          <!-- Close and Print -->
           <div class="viewer-actions">
             <button class="btn btn-xs btn-secondary" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimir</button>
             <button class="btn btn-circle btn-danger" onclick="closeCifraViewer()">&times;</button>
@@ -509,9 +467,7 @@
     </div>
   </div>
 
-  <!-- ================= TELA DE LOGIN & CADASTRO (AUTH OVERLAY) ================= -->
   <div id="auth-screen-overlay" class="auth-screen-overlay active">
-    <!-- Card de Login -->
     <div class="auth-card" id="auth-login-card">
       <div class="auth-logo-section">
         <img src="logo.jpg" alt="CCA Church Logo" class="auth-logo-img">
@@ -537,7 +493,6 @@
       </div>
     </div>
 
-    <!-- Card de Cadastro -->
     <div class="auth-card hidden" id="auth-register-card">
       <div class="auth-logo-section">
         <img src="logo.jpg" alt="CCA Church Logo" class="auth-logo-img">
@@ -614,7 +569,7 @@
     </div>
   </div>
 
-  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
 </body>
 </html>
