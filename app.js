@@ -27,7 +27,7 @@ let currentUserId = "";
 let currentViewingSong = null;
 let currentKeyOffset = 0;
 let autoScrollInterval = null;
-let currentFontSize = 18; // px
+let currentFontSize = 16; // px
 let originalSongChords = "";
 
 const CHORDS_SCALE = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
@@ -60,13 +60,17 @@ async function loadData() {
     presencesCache = await resPresences.json();
 
     // Vincula as presenças salvas dentro de seus respectivos objetos de eventos mapeados
-    events.forEach(ev => {
-      ev.presences = {};
-      const filtradas = presencesCache.filter(p => p.event_id === ev.id);
-      filtradas.forEach(p => {
-        ev.presences[p.member_id] = { status: p.status, reason: p.reason };
+    if (Array.isArray(events)) {
+      events.forEach(ev => {
+        ev.presences = {};
+        if (Array.isArray(presencesCache)) {
+          const filtradas = presencesCache.filter(p => p.event_id === ev.id);
+          filtradas.forEach(p => {
+            ev.presences[p.member_id] = { status: p.status, reason: p.reason };
+          });
+        }
       });
-    });
+    }
 
     // Gerencia o Token de Sessão ativa
     const loggedUserJson = localStorage.getItem("cca_user");
@@ -81,7 +85,7 @@ async function loadData() {
       }
     }
 
-    if (members.length > 0) {
+    if (Array.isArray(members) && members.length > 0) {
       currentUserId = members[0].id;
       setupUserSelector();
     }
@@ -302,18 +306,21 @@ function closeModal(id) {
   const m = document.getElementById(id);
   if (m) m.classList.remove("active");
 }
+
 function openLightbox(url, caption) {
   const lbImg = document.getElementById("lightbox-img");
   const lbCap = document.getElementById("lightbox-caption");
-  const lb = document.getElementById("lightbox");
+  const lb = document.getElementById("gallery-lightbox");
   if (lbImg) lbImg.src = url;
   if (lbCap) lbCap.textContent = caption;
   if (lb) lb.classList.add("active");
 }
+
 function closeLightbox() {
-  const lb = document.getElementById("lightbox");
+  const lb = document.getElementById("gallery-lightbox");
   if (lb) lb.classList.remove("active");
 }
+
 function formatDateShort(dateStr) {
   if(!dateStr) return "";
   const [year, month, day] = dateStr.split("-");
@@ -387,26 +394,26 @@ function renderDashboard() {
   if (presenceActions) {
     presenceActions.innerHTML = "";
     const isScaled = nextEvent.team && nextEvent.team.some(t => t.memberId === currentUserId);
-    const currentPresence = nextEvent.presences[currentUserId];
+    const currentPresence = nextEvent.presences ? nextEvent.presences[currentUserId] : null;
 
     if (!isScaled) {
-      presenceActions.innerHTML = `<span class="presence-status-banner pending"><i class="fa-solid fa-circle-exclamation"></i> Você não está escalado</span>`;
+      presenceActions.innerHTML = `<span class="presence-indicator presence-pending"><i class="fa-solid fa-circle-exclamation"></i> Você não está escalado</span>`;
     } else {
       const status = currentPresence ? currentPresence.status : "pending";
       if (status === "confirmed") {
         presenceActions.innerHTML = `
-          <span class="presence-status-banner confirmed"><i class="fa-solid fa-circle-check"></i> Presença Confirmada!</span>
-          <button class="btn btn-xs btn-outline text-danger" onclick="triggerAbsenceModal('${nextEvent.id}', '${currentUserId}')">Alterar para Falta</button>
+          <span class="presence-indicator presence-confirmed"><i class="fa-solid fa-circle-check"></i> Presença Confirmada!</span>
+          <button class="btn btn-xs btn-danger" onclick="triggerAbsenceModal('${nextEvent.id}', '${currentUserId}')">Alterar para Falta</button>
         `;
       } else if (status === "declined") {
         presenceActions.innerHTML = `
-          <span class="presence-status-banner declined"><i class="fa-solid fa-circle-xmark"></i> Ausente Justificado</span>
+          <span class="presence-indicator presence-declined"><i class="fa-solid fa-circle-xmark"></i> Ausente Justificado</span>
           <button class="btn btn-xs btn-primary" onclick="setPresence('${nextEvent.id}', '${currentUserId}', 'confirmed')">Mudar para Confirmado</button>
         `;
       } else {
         presenceActions.innerHTML = `
-          <button class="btn btn-primary" onclick="setPresence('${nextEvent.id}', '${currentUserId}', 'confirmed')">Confirmar Presença</button>
-          <button class="btn btn-secondary text-danger" onclick="triggerAbsenceModal('${nextEvent.id}', '${currentUserId}')">Recusar / Falta</button>
+          <button class="btn btn-primary btn-xs" onclick="setPresence('${nextEvent.id}', '${currentUserId}', 'confirmed')">Confirmar</button>
+          <button class="btn btn-danger btn-xs" onclick="triggerAbsenceModal('${nextEvent.id}', '${currentUserId}')">Recusar</button>
         `;
       }
     }
@@ -419,15 +426,11 @@ function renderDashboard() {
       nextEvent.team.forEach(t => {
         const m = members.find(member => member.id === t.memberId);
         if (!m) return;
-        const presenceInfo = nextEvent.presences[m.id] || { status: "pending" };
+        const presenceInfo = nextEvent.presences ? (nextEvent.presences[m.id] || { status: "pending" }) : { status: "pending" };
         const li = document.createElement("li");
-        li.className = "scale-member-item";
         li.innerHTML = `
-          <div class="scale-member-left">
-            <img class="scale-member-avatar" src="${m.photo_url || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}">
-            <div class="scale-member-info"><h4>${m.name}</h4><span>${t.role}</span></div>
-          </div>
-          <span class="status-indicator ${presenceInfo.status}">${presenceInfo.status === 'confirmed' ? 'Confirmado' : presenceInfo.status === 'declined' ? 'Ausente' : 'Pendente'}</span>
+          <div><strong>${m.name}</strong><br><span>${t.role}</span></div>
+          <span class="presence-indicator presence-${presenceInfo.status}">${presenceInfo.status === 'confirmed' ? 'Confirmado' : presenceInfo.status === 'declined' ? 'Ausente' : 'Pendente'}</span>
         `;
         scaleList.appendChild(li);
       });
@@ -442,9 +445,9 @@ function renderDashboard() {
         const s = songs.find(song => song.id === songId);
         if (!s) return;
         const card = document.createElement("div");
-        card.className = "song-link-card";
+        card.className = "song-link-item";
         card.onclick = () => openCifraViewer(s.id);
-        card.innerHTML = `<h4>${s.title}</h4><span>${s.artist}</span>`;
+        card.innerHTML = `<span><strong>${s.title}</strong> - ${s.artist}</span> <i class="fa-solid fa-chevron-right"></i>`;
         songsList.appendChild(card);
       });
     }
@@ -458,8 +461,15 @@ function renderEscalas() {
 
   events.forEach(ev => {
     const card = document.createElement("div");
-    card.className = "card event-card";
-    card.innerHTML = `<h3>${ev.title}</h3><p>Data: ${formatDateShort(ev.date)}</p>`;
+    card.className = "event-card";
+    card.innerHTML = `
+      <div class="event-card-header">
+        <h3>${ev.title}</h3>
+        <span class="song-card-key">${ev.type}</span>
+      </div>
+      <p><i class="fa-regular fa-calendar"></i> Data: ${formatDateShort(ev.date)}</p>
+      <p><i class="fa-regular fa-clock"></i> Início: ${ev.time.substring(0,5)}h</p>
+    `;
     container.appendChild(card);
   });
 }
@@ -471,12 +481,19 @@ function renderCifras() {
 
   const searchQuery = document.getElementById("search-cifras") ? document.getElementById("search-cifras").value.toLowerCase() : "";
 
-  const filtered = songs.filter(s => s.title.toLowerCase().includes(searchQuery));
+  const filtered = songs.filter(s => s.title.toLowerCase().includes(searchQuery) || s.artist.toLowerCase().includes(searchQuery));
   filtered.forEach(s => {
     const card = document.createElement("div");
-    card.className = "card cifra-card";
+    card.className = "song-card";
     card.onclick = () => openCifraViewer(s.id);
-    card.innerHTML = `<h3>${s.title}</h3><p>${s.artist}</p>`;
+    card.innerHTML = `
+      <div class="song-card-header">
+        <h3>${s.title}</h3>
+        <span class="song-card-key">${s.key}</span>
+      </div>
+      <p class="text-secondary">${s.artist}</p>
+      <span class="font-sm" style="color: var(--primary)">${s.rhythm || 'Ritmo não informado'}</span>
+    `;
     container.appendChild(card);
   });
 
@@ -508,8 +525,12 @@ function renderMembros() {
 
   members.forEach(m => {
     const card = document.createElement("div");
-    card.className = "card member-card";
-    card.innerHTML = `<h3>${m.name}</h3><p>${m.instrument}</p>`;
+    card.className = "member-card";
+    card.innerHTML = `
+      <h3>${m.name}</h3>
+      <p class="text-secondary"><i class="fa-solid fa-guitar"></i> ${m.instrument}</p>
+      <span class="user-badge font-sm" style="margin-top:0.5rem;">${m.role}</span>
+    `;
     container.appendChild(card);
   });
 }
@@ -548,20 +569,80 @@ function openCifraViewer(songId) {
   if (!song) return;
   currentViewingSong = song;
   originalSongChords = song.chords;
+  currentKeyOffset = 0;
+  
   if(document.getElementById("view-song-title")) document.getElementById("view-song-title").textContent = song.title;
   if(document.getElementById("view-song-artist")) document.getElementById("view-song-artist").textContent = song.artist;
+  if(document.getElementById("view-song-rhythm")) document.getElementById("view-song-rhythm").textContent = song.rhythm || "Balada";
+  
   renderParsedCifra();
   if(document.getElementById("cifra-viewer-overlay")) document.getElementById("cifra-viewer-overlay").classList.add("active");
 }
 
 function closeCifraViewer() {
+  stopAutoScroll();
   if(document.getElementById("cifra-viewer-overlay")) document.getElementById("cifra-viewer-overlay").classList.remove("active");
+}
+
+function transpose(offset) {
+  currentKeyOffset = (currentKeyOffset + offset) % 12;
+  renderParsedCifra();
 }
 
 function renderParsedCifra() {
   if (!currentViewingSong) return;
-  const output = originalSongChords.replace(/\[(.*?)\]/g, '<span class="chord-highlight">$1</span>');
-  if(document.getElementById("cifra-sheet-rendered")) document.getElementById("cifra-sheet-rendered").innerHTML = output;
+  
+  const baseKeyIndex = CHORDS_SCALE.indexOf(currentViewingSong.key.toUpperCase());
+  const displayKeyIndex = (baseKeyIndex + currentKeyOffset + 12) % 12;
+  
+  const currentKeyDisplay = document.getElementById("current-key-display");
+  if (currentKeyDisplay) currentKeyDisplay.textContent = CHORDS_SCALE[displayKeyIndex];
+
+  let chordsText = originalSongChords;
+  if (currentKeyOffset !== 0) {
+    chordsText = chordsText.replace(/\[(.*?)\]/g, (match, chord) => {
+      return `[${transposeChord(chord, currentKeyOffset)}]`;
+    });
+  }
+
+  const output = chordsText.replace(/\[(.*?)\]/g, '<span class="chord-highlight">$1</span>');
+  const renderedArea = document.getElementById("cifra-content-area");
+  if (renderedArea) {
+    renderedArea.innerHTML = output;
+    renderedArea.style.fontSize = `${currentFontSize}px`;
+  }
+}
+
+function transposeChord(chord, offset) {
+  return chord.replace(/[A-G]#?/g, (note) => {
+    let idx = CHORDS_SCALE.indexOf(note);
+    if (idx === -1) return note;
+    return CHORDS_SCALE[(idx + offset + 12) % 12];
+  });
+}
+
+function toggleAutoScroll(speed) {
+  stopAutoScroll();
+  const bodyEl = document.querySelector(".cifra-viewer-body");
+  if (!bodyEl) return;
+
+  const intervalTime = speed === 1 ? 50 : 25;
+  autoScrollInterval = setInterval(() => {
+    bodyEl.scrollTop += 1;
+  }, intervalTime);
+}
+
+function stopAutoScroll() {
+  if (autoScrollInterval) {
+    clearInterval(autoScrollInterval);
+    autoScrollInterval = null;
+  }
+}
+
+function adjustFontSize(dir) {
+  currentFontSize = Math.max(12, Math.min(28, currentFontSize + (dir * 2)));
+  const renderedArea = document.getElementById("cifra-content-area");
+  if (renderedArea) renderedArea.style.fontSize = `${currentFontSize}px`;
 }
 
 // ================= CONFIGURAÇÃO SEGURA DOS FORMULÁRIOS =================
@@ -619,18 +700,15 @@ function setupForms() {
           submitBtn.textContent = "Enviando para o servidor...";
         }
 
-        // Envia o binário físico para o bucket chamado 'photos'
         const { data, error } = await supabase.storage
           .from('photos')
           .upload(fileName, file, { cacheControl: '3600', upsert: false });
 
         if (error) throw error;
 
-        // Recupera link da CDN pública do Supabase
         const { data: urlData } = supabase.storage.from('photos').getPublicUrl(fileName);
         const publicUrl = urlData.publicUrl;
 
-        // Registra metadados no banco relacional
         const resMeta = await fetch(`${SUPABASE_URL}/rest/v1/photos`, {
           method: "POST",
           headers: getHeaders(),
@@ -645,7 +723,7 @@ function setupForms() {
         }
       } catch (err) {
         console.error(err);
-        alert("Erro no upload da imagem físico.");
+        alert("Erro no upload físico da imagem.");
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
@@ -666,6 +744,9 @@ function setupForms() {
         role: document.getElementById(`role-for-${cb.value}`).value || "Músico"
       }));
 
+      const hexInput = document.getElementById("event-colors-hex").value;
+      const dressColors = hexInput ? hexInput.split(",").map(c => c.trim()) : [];
+
       const body = {
         title: document.getElementById("event-title").value,
         type: document.getElementById("event-type").value,
@@ -673,6 +754,7 @@ function setupForms() {
         time: document.getElementById("event-time").value,
         arrival_time: document.getElementById("event-arrival").value,
         dress_code: document.getElementById("event-dress").value,
+        dress_colors: dressColors,
         songs: checkedSongs,
         team: checkedMembers
       };
@@ -690,6 +772,23 @@ function setupForms() {
           await loadData();
         }
       } catch (err) { console.error(err); }
+    };
+  }
+  
+  // 4. Tratamento do Formulário de Justificativa de Ausência
+  const formAbsence = document.getElementById("form-absence-reason");
+  if (formAbsence) {
+    formAbsence.onsubmit = async (e) => {
+      e.preventDefault();
+      const eventId = document.getElementById("absence-event-id").value;
+      const memberId = document.getElementById("absence-member-id").value;
+      const selectReason = document.getElementById("absence-select-reason").value;
+      const customReason = document.getElementById("absence-custom-reason").value;
+      const finalReason = selectReason === "Outro" ? customReason : selectReason;
+
+      await setPresence(eventId, memberId, "declined", finalReason);
+      closeModal("modal-absence-reason");
+      formAbsence.reset();
     };
   }
 }
@@ -750,46 +849,4 @@ function setupAuthForms() {
       const p1 = document.getElementById("register-password").value;
       const p2 = document.getElementById("register-confirm").value;
       if (p1 !== p2) {
-        alert("As senhas digitadas não batem!");
-        return;
-      }
-
-      const accessLevel = document.getElementById("register-access").value;
-      if (accessLevel === "Administrador") {
-        const code = document.getElementById("register-admin-code").value;
-        if (code !== ADMIN_SECURITY_CODE) {
-          alert("Código administrativo incorreto.");
-          return;
-        }
-      }
-
-      const userEmailPrefix = document.getElementById("register-email-user").value.trim().toLowerCase();
-      const fullEmail = `${userEmailPrefix}@ccamusic.com.br`;
-
-      const body = {
-        name: document.getElementById("register-name").value,
-        nickname: document.getElementById("register-nickname").value,
-        instrument: document.getElementById("register-instrument").value,
-        role: document.getElementById("register-role").value,
-        access_level: accessLevel,
-        email: fullEmail,
-        phone: document.getElementById("register-phone").value,
-        password: p1,
-        photo_url: ""
-      };
-
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/members`, {
-          method: "POST",
-          headers: getHeaders(),
-          body: JSON.stringify(body)
-        });
-        if (res.ok) {
-          alert("Cadastro efetuado com sucesso!");
-          fRegister.reset();
-          window.location.reload();
-        }
-      } catch(err) { console.error(err); }
-    };
-  }
-}
+        alert
