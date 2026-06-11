@@ -4,16 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal CCA Music</title>
+  <!-- Google Fonts: Outfit (modern headlines) & Inter (clean UI text) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome for Premium Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+  <!-- App Wrapper -->
   <div class="app-container">
     
+    <!-- Sidebar Navigation -->
     <aside class="sidebar">
       <div class="logo-area">
         <img src="logo.jpg" alt="CCA Church Logo" class="logo-img">
@@ -23,7 +27,8 @@
       <div class="user-selector-box">
         <label for="current-user-select"><i class="fa-solid fa-user-circle"></i> Simular Membro:</label>
         <select id="current-user-select" class="user-dropdown">
-          </select>
+          <!-- Populated by JavaScript -->
+        </select>
         <span class="user-badge" id="user-role-badge">Líder</span>
       </div>
 
@@ -46,7 +51,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <button class="btn-logout" onclick="localStorage.removeItem('cca_user'); window.location.reload();" title="Encerrar sessão de acesso ao portal">
+        <button class="btn-logout" onclick="logoutUser()" title="Encerrar sessão de acesso ao portal">
           <i class="fa-solid fa-right-from-bracket"></i> Sair do Portal
         </button>
         <p>Portal CCA Music v1.0</p>
@@ -54,8 +59,10 @@
       </div>
     </aside>
 
+    <!-- Main Content Area -->
     <main class="main-content">
       
+      <!-- Top header bar -->
       <header class="top-header">
         <div class="header-info">
           <h1 id="page-title">Painel Geral</h1>
@@ -64,38 +71,42 @@
         <div class="header-actions">
           <div class="date-display">
             <i class="fa-regular fa-calendar"></i>
-            <span id="live-date">Carregando data...</span>
+            <span id="live-date">26 de Maio, 2026</span>
           </div>
         </div>
       </header>
 
+      <!-- View Containers -->
       <div class="view-viewport">
 
+        <!-- ================= DASHBOARD VIEW ================= -->
         <section id="view-dashboard" class="tab-view active">
+          <!-- Stats Summary Grid -->
           <div class="stats-grid">
             <div class="stat-card">
               <div class="stat-icon purple"><i class="fa-solid fa-calendar-check"></i></div>
               <div class="stat-info">
                 <h3>Próximo Encontro</h3>
-                <p id="stat-next-date">Carregando...</p>
+                <p id="stat-next-date">31 de Maio</p>
               </div>
             </div>
             <div class="stat-card">
               <div class="stat-icon blue"><i class="fa-solid fa-music"></i></div>
               <div class="stat-info">
                 <h3>Cifras Ativas</h3>
-                <p id="stat-songs-count">0 Músicas</p>
+                <p id="stat-songs-count">3 Músicas</p>
               </div>
             </div>
             <div class="stat-card">
               <div class="stat-icon green"><i class="fa-solid fa-user-group"></i></div>
               <div class="stat-info">
                 <h3>Membros Ativos</h3>
-                <p id="stat-members-count">0 Integrantes</p>
+                <p id="stat-members-count">6 Integrantes</p>
               </div>
             </div>
           </div>
 
+          <!-- Highlight Area (Próximo Evento Detalhado) -->
           <div class="dashboard-highlight">
             <div class="card highlight-card">
               <div class="card-header highlight-header">
@@ -104,6 +115,7 @@
               </div>
               
               <div class="highlight-grid">
+                <!-- Info do Evento -->
                 <div class="highlight-info-section">
                   <h3 id="dash-event-title" class="event-title-highlight">Carregando...</h3>
                   <div class="highlight-meta-list">
@@ -120,29 +132,36 @@
                         <strong>Paleta de Roupas:</strong>
                         <span id="dash-event-dress">Carregando...</span>
                         <div class="color-palette-preview" id="dash-event-colors">
-                          </div>
+                          <!-- Color dots here -->
+                        </div>
                       </div>
                     </div>
                   </div>
 
+                  <!-- Quick Presence Selector -->
                   <div class="quick-presence-box card">
                     <h4><i class="fa-regular fa-square-check"></i> Sua Confirmação de Presença:</h4>
                     <p class="text-secondary font-sm">Responda para ajudar no planejamento musical.</p>
                     <div class="quick-presence-actions" id="dash-presence-actions">
-                      </div>
+                      <!-- Filled by JS -->
+                    </div>
                   </div>
                 </div>
 
+                <!-- Escala Integrantes -->
                 <div class="highlight-scale-section">
                   <h3><i class="fa-solid fa-user-tag"></i> Integrantes Escalados</h3>
                   <ul class="scale-list" id="dash-event-scale-list">
-                    </ul>
+                    <!-- Populated by JS -->
+                  </ul>
                 </div>
 
+                <!-- Músicas com Cifras -->
                 <div class="highlight-songs-section">
                   <h3><i class="fa-solid fa-guitar"></i> Músicas do Dia</h3>
                   <div class="songs-list-links" id="dash-event-songs-list">
-                    </div>
+                    <!-- Populated by JS -->
+                  </div>
                 </div>
               </div>
             </div>
@@ -150,6 +169,7 @@
         </section>
 
 
+        <!-- ================= ESCALAS VIEW ================= -->
         <section id="view-escalas" class="tab-view">
           <div class="section-actions-bar">
             <h2>Agenda de Escalas</h2>
@@ -159,10 +179,12 @@
           </div>
 
           <div class="events-grid" id="events-cards-container">
-            </div>
+            <!-- Populated by JS -->
+          </div>
         </section>
 
 
+        <!-- ================= CIFRAS VIEW ================= -->
         <section id="view-cifras" class="tab-view">
           <div class="section-actions-bar">
             <div class="search-filter-group">
@@ -170,7 +192,7 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="search-cifras" placeholder="Buscar por música, artista ou tom...">
               </div>
-              <button class="btn btn-secondary btn-cifraclub" onclick="window.open('https://www.cifraclub.com.br', '_blank')" title="Buscar artista ou música no Cifra Club">
+              <button class="btn btn-secondary btn-cifraclub" onclick="searchOnCifraClub()" title="Buscar artista ou música no Cifra Club">
                 <i class="fa-solid fa-arrow-up-right-from-square"></i> Cifra Club
               </button>
               <select id="filter-rhythm" class="filter-dropdown">
@@ -187,10 +209,12 @@
           </div>
 
           <div class="cifras-list-grid" id="cifras-cards-container">
-            </div>
+            <!-- Populated by JS -->
+          </div>
         </section>
 
 
+        <!-- ================= GALERIA VIEW ================= -->
         <section id="view-galeria" class="tab-view">
           <div class="section-actions-bar">
             <h2>Galeria de Fotos do Grupo</h2>
@@ -200,10 +224,12 @@
           </div>
 
           <div class="gallery-masonry" id="gallery-container">
-            </div>
+            <!-- Populated by JS -->
+          </div>
         </section>
 
 
+        <!-- ================= INTEGRANTES VIEW ================= -->
         <section id="view-membros" class="tab-view">
           <div class="section-actions-bar">
             <h2>Membros do Grupo</h2>
@@ -213,13 +239,17 @@
           </div>
 
           <div class="members-grid" id="members-container">
-            </div>
+            <!-- Populated by JS -->
+          </div>
         </section>
 
       </div>
     </main>
   </div>
 
+  <!-- ================= MODAIS DA APLICAÇÃO ================= -->
+
+  <!-- Modal: Nova Escala / Evento -->
   <div id="modal-add-event" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-header">
@@ -261,20 +291,22 @@
           <input type="text" id="event-dress" placeholder="Ex: Tons pastéis, Camiseta preta">
         </div>
         <div class="form-group">
-          <label for="event-colors-hex">Cores da Paleta (Códigos Hex separados por vírgula)</label>
+          <label>Cores da Paleta (Selecione ou adicione códigos em Hex separado por vírgula)</label>
           <input type="text" id="event-colors-hex" placeholder="#ff0000, #000000">
         </div>
         
         <div class="form-group">
           <label>Selecionar Músicas para o Repertório</label>
           <div class="songs-checkboxes-container" id="event-songs-checkboxes">
-            </div>
+            <!-- Populated by JS -->
+          </div>
         </div>
 
         <div class="form-group">
           <label>Escalar Integrantes e Funções</label>
           <div class="scale-selector-container" id="event-team-selector">
-            </div>
+            <!-- Populated by JS -->
+          </div>
         </div>
 
         <div class="modal-footer">
@@ -285,6 +317,7 @@
     </div>
   </div>
 
+  <!-- Modal: Nova Música / Cifra -->
   <div id="modal-add-song" class="modal-backdrop">
     <div class="modal-card modal-card-lg">
       <div class="modal-header">
@@ -332,6 +365,7 @@
     </div>
   </div>
 
+  <!-- Modal: Nova Foto -->
   <div id="modal-add-photo" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-header">
@@ -344,8 +378,19 @@
           <input type="text" id="photo-caption" required placeholder="Ex: Ensaio de Sábado">
         </div>
         <div class="form-group">
+          <label for="photo-url-type">Origem da Imagem</label>
+          <select id="photo-url-type" onchange="togglePhotoInput()">
+            <option value="url">Link Externo (URL)</option>
+            <option value="file">Enviar Arquivo local</option>
+          </select>
+        </div>
+        <div class="form-group" id="photo-url-group">
           <label for="photo-url">Endereço da Imagem (URL)</label>
-          <input type="url" id="photo-url" required placeholder="https://images.unsplash.com/photo-...">
+          <input type="url" id="photo-url" placeholder="https://images.unsplash.com/photo-...">
+        </div>
+        <div class="form-group hidden" id="photo-file-group">
+          <label for="photo-file">Escolha um Arquivo de Foto</label>
+          <input type="file" id="photo-file" accept="image/*">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-photo')">Cancelar</button>
@@ -355,21 +400,55 @@
     </div>
   </div>
 
+  <!-- Modal: Novo Integrante -->
   <div id="modal-add-member" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-user-plus"></i> Painel de Convite Administrativo</h3>
+        <h3><i class="fa-solid fa-user-plus"></i> Cadastrar Integrante</h3>
         <button class="btn-close-modal" onclick="closeModal('modal-add-member')">&times;</button>
       </div>
-      <div class="modal-body-wrapper" style="padding: 1rem 0;">
-         <p class="text-secondary font-sm">Novos integrantes efetuam o auto-cadastro diretamente clicando em <strong>"Cadastre-se aqui"</strong> na tela inicial de login do sistema.</p>
-      </div>
-      <div class="modal-footer">
-         <button type="button" class="btn btn-primary" onclick="closeModal('modal-add-member')" style="width: 100%;">Entendido</button>
-      </div>
+      <form id="form-add-member" class="modal-form">
+        <div class="form-group">
+          <label for="member-name">Nome Completo</label>
+          <input type="text" id="member-name" required placeholder="Ex: João da Silva">
+        </div>
+        <div class="form-group">
+          <label for="member-instrument">Instrumento Principal</label>
+          <input type="text" id="member-instrument" required placeholder="Ex: Guitarra, Vocal, Violino">
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="member-email">E-mail</label>
+            <input type="email" id="member-email" placeholder="joao@ccamusic.com">
+          </div>
+          <div class="form-group">
+            <label for="member-phone">Celular</label>
+            <input type="tel" id="member-phone" placeholder="(11) 99999-9999">
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="member-role">Cargo/Função no Grupo</label>
+            <select id="member-role">
+              <option value="Ministro">Ministro</option>
+              <option value="Backing Vocal">Backing Vocal</option>
+              <option value="Músico">Músico</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="member-photo">Foto de Perfil (URL ou em branco para avatar)</label>
+            <input type="url" id="member-photo" placeholder="https://images.unsplash.com/photo-...">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-member')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
+      </form>
     </div>
   </div>
 
+  <!-- Modal: Registrar Motivo da Ausência / Falta -->
   <div id="modal-absence-reason" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-header">
@@ -409,6 +488,7 @@
     </div>
   </div>
 
+  <!-- Lightbox de Imagens -->
   <div id="lightbox" class="lightbox-backdrop" onclick="closeLightbox()">
     <button class="lightbox-close">&times;</button>
     <div class="lightbox-content" onclick="event.stopPropagation()">
@@ -417,6 +497,7 @@
     </div>
   </div>
 
+  <!-- ================= VISUALIZADOR DE CIFRAS INTERATIVO ================= -->
   <div id="cifra-viewer-overlay" class="cifra-viewer-overlay">
     <div class="cifra-viewer-container">
       <header class="cifra-viewer-header">
@@ -427,16 +508,18 @@
         </div>
         
         <div class="cifra-viewer-controls">
+          <!-- Transposer -->
           <div class="control-group">
             <span class="control-label"><i class="fa-solid fa-sliders"></i> Tom:</span>
             <div class="transposer-buttons">
               <button class="btn btn-xs" onclick="changeKey(-1)"><i class="fa-solid fa-minus"></i></button>
               <span id="current-key-display">C</span>
               <button class="btn btn-xs" onclick="changeKey(1)"><i class="fa-solid fa-plus"></i></button>
-              <button class="btn btn-xs btn-outline" onclick="currentKeyOffset=0; renderParsedCifra();">Original</button>
+              <button class="btn btn-xs btn-outline" onclick="resetKey()">Original</button>
             </div>
           </div>
 
+          <!-- Auto-scroll -->
           <div class="control-group">
             <span class="control-label"><i class="fa-solid fa-arrows-up-down"></i> Auto-Rolagem:</span>
             <div class="autoscroll-buttons">
@@ -446,6 +529,7 @@
             </div>
           </div>
 
+          <!-- Font Size -->
           <div class="control-group">
             <span class="control-label"><i class="fa-solid fa-font"></i> Tamanho:</span>
             <div class="font-buttons">
@@ -454,6 +538,7 @@
             </div>
           </div>
 
+          <!-- Close and Print -->
           <div class="viewer-actions">
             <button class="btn btn-xs btn-secondary" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimir</button>
             <button class="btn btn-circle btn-danger" onclick="closeCifraViewer()">&times;</button>
@@ -462,12 +547,15 @@
       </header>
 
       <div class="cifra-viewer-body" id="cifra-pre-body">
+        <!-- Rendered parsed chord sheet pre element goes here -->
         <pre id="cifra-sheet-rendered"></pre>
       </div>
     </div>
   </div>
 
+  <!-- ================= TELA DE LOGIN & CADASTRO (AUTH OVERLAY) ================= -->
   <div id="auth-screen-overlay" class="auth-screen-overlay active">
+    <!-- Card de Login -->
     <div class="auth-card" id="auth-login-card">
       <div class="auth-logo-section">
         <img src="logo.jpg" alt="CCA Church Logo" class="auth-logo-img">
@@ -493,6 +581,7 @@
       </div>
     </div>
 
+    <!-- Card de Cadastro -->
     <div class="auth-card hidden" id="auth-register-card">
       <div class="auth-logo-section">
         <img src="logo.jpg" alt="CCA Church Logo" class="auth-logo-img">
@@ -510,6 +599,10 @@
             <label for="register-nickname"><i class="fa-regular fa-face-smile"></i> Apelido / Nome Curto</label>
             <input type="text" id="register-nickname" required placeholder="Ex: Luquinhas, Gabi">
           </div>
+        </div>
+        <div class="form-group">
+          <label for="register-photo"><i class="fa-regular fa-image"></i> Foto de Perfil (Opcional)</label>
+          <input type="file" id="register-photo" accept="image/*" style="padding: 0.5rem 1rem;">
         </div>
         <div class="form-row-2">
           <div class="form-group">
@@ -546,7 +639,7 @@
           </div>
           <div class="form-group">
             <label for="register-phone"><i class="fa-solid fa-phone"></i> Celular / WhatsApp</label>
-            <input type="tel" id="register-phone" required placeholder="Ex: 21999998888">
+            <input type="tel" id="register-phone" required placeholder="Ex: 11999998888">
           </div>
         </div>
         <div class="form-row-2">
@@ -569,7 +662,8 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Scripts -->
+  <script src="seedData.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
