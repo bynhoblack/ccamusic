@@ -46,7 +46,7 @@ async function loadData() {
     }
 }
 
-// --- NAVEGAÇÃO ---
+// --- NAVEGAÇÃO E UI ---
 function setupNavigation() {
     document.querySelectorAll('.nav-item').forEach(button => {
         button.addEventListener('click', () => {
@@ -63,17 +63,16 @@ function renderActiveView(tabId = null) {
         tabId = activeTabItem ? activeTabItem.getAttribute("data-tab") : "dashboard";
     }
     
-    // Esconde todas as views e mostra a ativa
     document.querySelectorAll('.tab-view').forEach(view => view.classList.remove('active'));
     const targetView = document.getElementById(`view-${tabId}`);
     if (targetView) targetView.classList.add('active');
     
-    // Atualiza título
     const titles = { "dashboard": "Painel Geral", "escalas": "Escalas & Presença", "cifras": "Banco de Cifras", "galeria": "Galeria", "membros": "Integrantes" };
-    document.getElementById("page-title").textContent = titles[tabId] || "Portal";
+    const titleEl = document.getElementById("page-title");
+    if(titleEl) titleEl.textContent = titles[tabId] || "Portal";
 }
 
-// --- AUTH & ADMIN LOGIC ---
+// --- AUTENTICAÇÃO E FORMULÁRIOS ---
 function checkAuth() {
     const user = localStorage.getItem('cca_user');
     const authOverlay = document.getElementById('auth-screen-overlay');
@@ -83,9 +82,9 @@ function checkAuth() {
 }
 
 function initAuthListeners() {
+    // Listener para o seletor de administrador
     const accessSelect = document.getElementById('register-access');
     const adminCodeGroup = document.getElementById('register-admin-code-group');
-
     if (accessSelect) {
         accessSelect.addEventListener('change', (e) => {
             if (e.target.value === 'Administrador') {
@@ -93,6 +92,16 @@ function initAuthListeners() {
             } else {
                 adminCodeGroup.classList.add('hidden');
             }
+        });
+    }
+
+    // Bloquear recarregamento dos formulários
+    const registerForm = document.getElementById('form-auth-register');
+    if(registerForm) {
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            localStorage.setItem('cca_user', 'active');
+            location.reload();
         });
     }
 }
