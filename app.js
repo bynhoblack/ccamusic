@@ -46,6 +46,32 @@ async function loadData() {
     }
 }
 
+// --- AUTENTICAÇÃO REAL (SUPABASE) ---
+async function registrarUsuario(name, email, password, role) {
+    try {
+        const { data, error } = await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: { data: { name: name, role: role } }
+        });
+        if (error) throw error;
+        
+        // Salva na tabela de membros
+        await supabaseClient.from('members').insert([{ name, email, role }]);
+        alert("Cadastro realizado!");
+        location.reload();
+    } catch (err) { alert("Erro no cadastro: " + err.message); }
+}
+
+async function logarUsuario(email, password) {
+    try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        localStorage.setItem('cca_user', JSON.stringify(data.user));
+        location.reload();
+    } catch (err) { alert("Erro no login: " + err.message); }
+}
+
 // --- NAVEGAÇÃO E UI ---
 function setupNavigation() {
     document.querySelectorAll('.nav-item').forEach(button => {
@@ -62,7 +88,6 @@ function renderActiveView(tabId = null) {
         const activeTabItem = document.querySelector(".nav-item.active");
         tabId = activeTabItem ? activeTabItem.getAttribute("data-tab") : "dashboard";
     }
-    
     document.querySelectorAll('.tab-view').forEach(view => view.classList.remove('active'));
     const targetView = document.getElementById(`view-${tabId}`);
     if (targetView) targetView.classList.add('active');
@@ -72,53 +97,52 @@ function renderActiveView(tabId = null) {
     if(titleEl) titleEl.textContent = titles[tabId] || "Portal";
 }
 
-// --- AUTENTICAÇÃO E FORMULÁRIOS ---
-function checkAuth() {
-    const user = localStorage.getItem('cca_user');
-    const authOverlay = document.getElementById('auth-screen-overlay');
-    if (authOverlay) {
-        user ? authOverlay.classList.remove('active') : authOverlay.classList.add('active');
-    }
-}
-
+// --- LISTENERS DE FORMULÁRIO ---
 function initAuthListeners() {
-    // Listener para o seletor de administrador
     const accessSelect = document.getElementById('register-access');
     const adminCodeGroup = document.getElementById('register-admin-code-group');
     if (accessSelect) {
         accessSelect.addEventListener('change', (e) => {
-            if (e.target.value === 'Administrador') {
-                adminCodeGroup.classList.remove('hidden');
-            } else {
-                adminCodeGroup.classList.add('hidden');
-            }
+            adminCodeGroup.classList.toggle('hidden', e.target.value !== 'Administrador');
         });
     }
 
-    // Bloquear recarregamento dos formulários
-    const registerForm = document.getElementById('form-auth-register');
-    if(registerForm) {
-        registerForm.addEventListener('submit', (e) => {
+    const regForm = document.getElementById('form-auth-register');
+    if(regForm) {
+        regForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            localStorage.setItem('cca_user', 'active');
-            location.reload();
+            await registrarUsuario(
+                document.getElementById('register-name').value,
+                document.getElementById('register-email-user').value,
+                document.getElementById('register-password').value,
+                document.getElementById('register-access').value
+            );
+        });
+    }
+
+    const logForm = document.getElementById('form-auth-login');
+    if(logForm) {
+        logForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await logarUsuario(
+                document.getElementById('login-email').value,
+                document.getElementById('login-password').value
+            );
         });
     }
 }
 
 function toggleAuthForms(type) {
-    const loginCard = document.getElementById('auth-login-card');
-    const registerCard = document.getElementById('auth-register-card');
-    if (type === 'register') {
-        loginCard.classList.add('hidden');
-        registerCard.classList.remove('hidden');
-    } else {
-        loginCard.classList.remove('hidden');
-        registerCard.classList.add('hidden');
-    }
+    document.getElementById('auth-login-card').classList.toggle('hidden', type === 'register');
+    document.getElementById('auth-register-card').classList.toggle('hidden', type === 'login');
 }
 
-// --- UTILIDADES ---
+function checkAuth() {
+    const user = localStorage.getItem('cca_user');
+    const authOverlay = document.getElementById('auth-screen-overlay');
+    if (authOverlay) authOverlay.classList.toggle('active', !user);
+}
+
 function updateLiveDate() {
     const el = document.getElementById('live-date');
     if (el) el.textContent = new Date().toLocaleDateString('pt-BR');
