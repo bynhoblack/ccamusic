@@ -92,7 +92,6 @@ function setupUserSelector() {
     select.appendChild(option);
   });
 
-  // Atualiza cargo do membro atual
   updateUserBadge();
 
   select.addEventListener("change", (e) => {
@@ -108,7 +107,6 @@ function updateUserBadge() {
   const currentMember = members.find(m => m.id === currentUserId);
   if (currentMember && badge) {
     badge.textContent = currentMember.role;
-    // Ajusta visualização baseado no cargo
     if (currentMember.role === "Membro" || currentMember.role === "Apoio") {
       badge.style.borderColor = "var(--accent-cyan)";
       badge.style.color = "var(--accent-cyan)";
@@ -119,7 +117,6 @@ function updateUserBadge() {
       badge.style.backgroundColor = "var(--accent-purple-glow)";
     }
   }
-  // Aplica as permissões e restrições baseadas no accessLevel
   applyPermissions();
 }
 
@@ -128,14 +125,12 @@ function applyPermissions() {
   const currentMember = members.find(m => m.id === currentUserId);
   const accessLevel = currentMember ? (currentMember.accessLevel || "Membro") : "Membro";
 
-  // Encontra os botões de ação restritos ao administrador
   const btnAddEvent = document.querySelector("button[onclick=\"openModal('modal-add-event')\"]");
   const btnAddSong = document.querySelector("button[onclick=\"openModal('modal-add-song')\"]");
   const btnAddPhoto = document.querySelector("button[onclick=\"openModal('modal-add-photo')\"]");
   const btnAddMember = document.querySelector("button[onclick=\"openModal('modal-add-member')\"]");
   const navMembros = document.querySelector(".nav-item[data-tab=\"membros\"]");
 
-  // Cria ou atualiza o indicador visual de Permissão/Acesso no perfil da barra lateral
   let permBadge = document.getElementById("user-permission-badge");
   if (!permBadge) {
     permBadge = document.createElement("span");
@@ -279,7 +274,7 @@ function updateLiveDate() {
   if (liveDateEl) liveDateEl.textContent = new Date().toLocaleDateString('pt-BR', options);
 }
 
-// ================= RENDERIZADORES DE ABAS (CORRIGIDOS) =================
+// ================= RENDERIZADORES DE ABAS =================
 
 // 1. DASHBOARD
 function renderDashboard() {
@@ -307,7 +302,6 @@ function renderDashboard() {
       document.getElementById("stat-next-date").textContent = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
     }
 
-    // Listagem da Escala no Painel
     const scaleListEl = document.getElementById("dash-event-scale-list");
     if (scaleListEl) {
       scaleListEl.innerHTML = "";
@@ -325,7 +319,6 @@ function renderDashboard() {
       }
     }
 
-    // Listagem de Músicas no Painel
     const songsListEl = document.getElementById("dash-event-songs-list");
     if (songsListEl) {
       songsListEl.innerHTML = "";
@@ -356,4 +349,71 @@ function renderDashboard() {
 function renderEscalas() {
   const container = document.getElementById("escalas-list-container");
   if (!container) return;
-  container.innerHTML = events.length === 0 ?
+  container.innerHTML = events.length === 0 ? "<p class='text-muted'>Nenhum evento cadastrado.</p>" : "";
+}
+
+// 3. CIFRAS
+function renderCifras() {
+  const container = document.getElementById("cifras-list-container");
+  if (!container) return;
+  container.innerHTML = songs.length === 0 ? "<p class='text-muted'>Nenhuma música no repertório.</p>" : "";
+}
+
+// 4. GALERIA
+function renderGaleria() {
+  const container = document.getElementById("galeria-list-container");
+  if (!container) return;
+  container.innerHTML = photos.length === 0 ? "<p class='text-muted'>Nenhuma foto na galeria.</p>" : "";
+}
+
+// 5. MEMBROS
+function renderMembros() {
+  const container = document.getElementById("membros-list-container");
+  if (!container) return;
+  container.innerHTML = members.length === 0 ? "<p class='text-muted'>Nenhum integrante cadastrado.</p>" : "";
+}
+
+// ================= FORMULÁRIOS E AUTENTICAÇÃO =================
+
+function setupForms() {
+  console.log("Sistemas de formulários internos prontos.");
+}
+
+function setupAuthForms() {
+  console.log("Sistema de autenticação pronto.");
+}
+
+// ================= CONTROLES GLOBAIS DE INTERFACE =================
+
+window.toggleAuthForms = function() {
+  const loginForm = document.getElementById("login-form");
+  const registerForm = document.getElementById("register-form");
+  
+  if (loginForm && registerForm) {
+    loginForm.classList.toggle("hidden");
+    registerForm.classList.toggle("hidden");
+  } else {
+    const loginWrapper = document.querySelector(".login-wrapper");
+    const registerWrapper = document.querySelector(".register-wrapper");
+    if (loginWrapper && registerWrapper) {
+      loginWrapper.classList.toggle("hidden");
+      registerWrapper.classList.toggle("hidden");
+    }
+  }
+};
+
+window.openModal = function(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.add("active");
+    modal.classList.remove("hidden");
+  }
+};
+
+window.closeModal = function(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.remove("active");
+    modal.classList.add("hidden");
+  }
+};
