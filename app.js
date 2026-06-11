@@ -2,7 +2,6 @@
 const SUPABASE_URL = 'https://ldsyjywdufhrblncadvj.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxkc3lqeXdkdWZocmJsbmNhZHZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMTM5ODMsImV4cCI6MjA5NjU4OTk4M30.9CO7Jziy-VItNFlpDGKlkrV6f_DPXwmq-Mdu5rRYaCk';
 
-// Inicialização do cliente de forma segura
 let supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const getHeaders = () => ({
@@ -24,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateLiveDate();
 });
 
-// --- CARREGAMENTO DE DADOS (CORRIGIDO) ---
+// --- CARREGAMENTO DE DADOS ---
 async function loadData() {
   console.log("Iniciando carga de dados...");
   try {
@@ -44,7 +43,6 @@ async function loadData() {
 
     [members, songs, events, photos, presencesCache] = results;
 
-    // Processamento relacional
     events.forEach(ev => {
       ev.presences = {};
       presencesCache.filter(p => p.event_id === ev.id).forEach(p => {
@@ -56,7 +54,6 @@ async function loadData() {
     console.log("Carga concluída com sucesso.");
   } catch (err) {
     console.error("Erro na sincronização:", err);
-    // Renderiza mesmo com erro para evitar tela travada
     renderActiveView();
   }
 }
@@ -79,6 +76,47 @@ function renderActiveView(tabId = null) {
   if (views[tabId]) views[tabId]();
 }
 
+function setupNavigation() {
+  document.querySelectorAll('.nav-item').forEach(button => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      renderActiveView(button.getAttribute('data-tab'));
+    });
+  });
+}
+
+// --- FUNÇÕES DE RENDERIZAÇÃO DE TELA ---
+function renderDashboard() { document.getElementById("page-title").textContent = "Painel Geral"; }
+function renderEscalas() { document.getElementById("page-title").textContent = "Escalas & Presença"; }
+function renderCifras() { document.getElementById("page-title").textContent = "Banco de Cifras"; }
+function renderGaleria() { document.getElementById("page-title").textContent = "Galeria"; }
+function renderMembros() { document.getElementById("page-title").textContent = "Integrantes"; }
+
+// --- AUTH & MODAIS ---
+function checkAuth() {
+  const user = localStorage.getItem('cca_user');
+  const authOverlay = document.getElementById('auth-screen-overlay');
+  if (authOverlay) {
+    user ? authOverlay.classList.remove('active') : authOverlay.classList.add('active');
+  }
+}
+
+function toggleAuthForms(type) {
+  const loginCard = document.getElementById('auth-login-card');
+  const registerCard = document.getElementById('auth-register-card');
+  if (type === 'register') {
+    loginCard.classList.add('hidden');
+    registerCard.classList.remove('hidden');
+  } else {
+    loginCard.classList.remove('hidden');
+    registerCard.classList.add('hidden');
+  }
+}
+
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
 // --- FUNÇÕES DE APOIO ---
 function openLightbox(url, caption) {
   const lb = document.getElementById("lightbox");
@@ -93,4 +131,7 @@ function closeLightbox() {
   document.getElementById("lightbox").classList.remove("active");
 }
 
-// [IMPORTANTE]: Certifique-se de que no seu HTML o ID "lightbox" exista
+function updateLiveDate() {
+  const el = document.getElementById('live-date');
+  if (el) el.textContent = new Date().toLocaleDateString('pt-BR');
+}
