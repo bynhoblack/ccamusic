@@ -48,6 +48,7 @@ async function loadData() {
 
 // --- AUTENTICAÇÃO REAL ---
 async function registrarUsuario(name, emailPrefix, password, confirmPassword, role, adminCode) {
+    // Validações básicas
     if (password !== confirmPassword) return alert("As senhas não coincidem!");
     if (password.length < 6) return alert("A senha deve ter pelo menos 6 caracteres.");
     
@@ -55,9 +56,9 @@ async function registrarUsuario(name, emailPrefix, password, confirmPassword, ro
     const email = `${emailPrefix}@ccamusic.com.br`;
 
     try {
-        // Validação de Admin
-        if (role === 'Administrador' && adminCode !== '1234') { // Mude '1234' para seu código secreto
-            throw new Error("Código de Administrador inválido.");
+        // Validação de Admin com código correto
+        if (role === 'Administrador' && adminCode !== 'cca2026') {
+            throw new Error("Código de Administrador incorreto!");
         }
 
         const { data, error } = await supabaseClient.auth.signUp({
@@ -65,12 +66,18 @@ async function registrarUsuario(name, emailPrefix, password, confirmPassword, ro
             password: password,
             options: { data: { name: name, role: role } }
         });
+        
         if (error) throw error;
         
-        await supabaseClient.from('members').insert([{ name, email, role }]);
-        alert("Cadastro realizado! Verifique seu e-mail se necessário.");
+        // Salva na tabela de membros
+        const { error: insertError } = await supabaseClient.from('members').insert([{ name, email, role }]);
+        if (insertError) throw insertError;
+
+        alert("Cadastro realizado! Você já pode entrar.");
         location.reload();
-    } catch (err) { alert("Erro no cadastro: " + err.message); }
+    } catch (err) { 
+        alert("Erro no cadastro: " + err.message); 
+    }
 }
 
 async function logarUsuario(email, password) {
