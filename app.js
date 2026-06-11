@@ -48,7 +48,7 @@ function loadData() {
     }
   }
 
-  // Define usuário atual inicial (Gabriela Silva por padrão)
+  // Define usuário atual inicial
   const savedUser = localStorage.getItem("cca_current_member");
   if (savedUser && members.some(m => m.id === savedUser)) {
     currentUserId = savedUser;
@@ -153,41 +153,32 @@ function applyPermissions() {
   }
 
   if (accessLevel === "Administrador") {
-    // Estilo ouro reluzente para Administradores
     permBadge.innerHTML = "<i class='fa-solid fa-crown'></i> Administrador";
     permBadge.style.borderColor = "#D4AF37";
     permBadge.style.color = "#D4AF37";
     permBadge.style.backgroundColor = "rgba(212, 175, 55, 0.15)";
 
-    // Habilita visualização e ações
     if (btnAddEvent) btnAddEvent.style.display = "inline-flex";
     if (btnAddSong) btnAddSong.style.display = "inline-flex";
     if (btnAddPhoto) btnAddPhoto.style.display = "inline-flex";
     if (btnAddMember) btnAddMember.style.display = "inline-flex";
     if (navMembros) navMembros.style.display = "flex";
   } else {
-    // Estilo prata/cinza fosco para Membros comuns
     permBadge.innerHTML = "<i class='fa-solid fa-user-shield'></i> Integrante";
     permBadge.style.borderColor = "var(--text-muted)";
     permBadge.style.color = "var(--text-muted)";
     permBadge.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
 
-    // Oculta todas as ações de adição/edição administrativa
     if (btnAddEvent) btnAddEvent.style.display = "none";
     if (btnAddSong) btnAddSong.style.display = "none";
     if (btnAddPhoto) btnAddPhoto.style.display = "none";
     if (btnAddMember) btnAddMember.style.display = "none";
-    
-    // Oculta a aba de Membros/Integrantes do menu lateral
     if (navMembros) navMembros.style.display = "none";
 
-    // Se estiver na aba Membros (que agora é oculta), joga de volta pro Dashboard
     const activeTabItem = document.querySelector(".nav-item.active");
     if (activeTabItem && activeTabItem.getAttribute("data-tab") === "membros") {
       const dashTab = document.querySelector(".nav-item[data-tab=\"dashboard\"]");
-      if (dashTab) {
-        dashTab.click();
-      }
+      if (dashTab) dashTab.click();
     }
   }
 }
@@ -199,7 +190,6 @@ function setupNavigation() {
     item.addEventListener("click", () => {
       const tab = item.getAttribute("data-tab");
       
-      // Validação rápida de rota para segurança adicional na UI
       const currentMember = members.find(m => m.id === currentUserId);
       const accessLevel = currentMember ? (currentMember.accessLevel || "Membro") : "Membro";
       if (tab === "membros" && accessLevel !== "Administrador") {
@@ -215,22 +205,18 @@ function setupNavigation() {
 }
 
 function switchTab(tabId) {
-  // Valida permissão da aba membros
   const currentMember = members.find(m => m.id === currentUserId);
   const accessLevel = currentMember ? (currentMember.accessLevel || "Membro") : "Membro";
   if (tabId === "membros" && accessLevel !== "Administrador") {
     tabId = "dashboard";
   }
 
-  // Oculta todas as views
   const views = document.querySelectorAll(".tab-view");
   views.forEach(v => v.classList.remove("active"));
   
-  // Exibe a ativa
   const activeView = document.getElementById(`view-${tabId}`);
   if (activeView) activeView.classList.add("active");
 
-  // Ajusta títulos da header
   const title = document.getElementById("page-title");
   const subtitle = document.getElementById("page-subtitle");
 
@@ -287,14 +273,13 @@ function renderActiveView(tabId = null) {
   }
 }
 
-// Exibe a Data do Dia Traduzida
 function updateLiveDate() {
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   const liveDateEl = document.getElementById("live-date");
   if (liveDateEl) liveDateEl.textContent = new Date().toLocaleDateString('pt-BR', options);
 }
 
-// ================= RENDERIZADORES DE ABAS =================
+// ================= RENDERIZADORES DE ABAS (CORRIGIDOS) =================
 
 // 1. DASHBOARD
 function renderDashboard() {
@@ -303,24 +288,72 @@ function renderDashboard() {
   if (statSongs) statSongs.textContent = `${songs.length} Músicas`;
   if (statMembers) statMembers.textContent = `${members.length} Integrantes`;
 
-  // Identifica o próximo evento cronológico baseado em data
   const todayStr = new Date().toISOString().split("T")[0];
-  
-  // Ordena os eventos pela data (mais próximos primeiro)
   const sortedEvents = [...events].sort((a, b) => new Date(a.date) - new Date(b.date));
   
-  // Pega o primeiro evento cuja data seja igual ou posterior a hoje, ou o mais recente da lista se todos forem no passado
   let nextEvent = sortedEvents.find(e => e.date >= todayStr);
   if (!nextEvent && sortedEvents.length > 0) {
-    nextEvent = sortedEvents[sortedEvents.length - 1]; // pega o último
+    nextEvent = sortedEvents[sortedEvents.length - 1];
   }
 
-  if (!nextEvent) {
+  if (nextEvent) {
+    if (document.getElementById("dash-event-title")) document.getElementById("dash-event-title").textContent = nextEvent.title || nextEvent.name;
+    if (document.getElementById("dash-event-time")) document.getElementById("dash-event-time").textContent = nextEvent.time || "-";
+    if (document.getElementById("dash-event-arrival")) document.getElementById("dash-event-arrival").textContent = nextEvent.arrival || "-";
+    if (document.getElementById("dash-event-dress")) document.getElementById("dash-event-dress").textContent = nextEvent.dress || "-";
+    
+    if (document.getElementById("stat-next-date")) {
+      const d = new Date(nextEvent.date + 'T00:00:00');
+      document.getElementById("stat-next-date").textContent = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    }
+
+    // Listagem da Escala no Painel
+    const scaleListEl = document.getElementById("dash-event-scale-list");
+    if (scaleListEl) {
+      scaleListEl.innerHTML = "";
+      if (nextEvent.scale && nextEvent.scale.length > 0) {
+        nextEvent.scale.forEach(mId => {
+          const m = members.find(member => member.id === mId);
+          if (m) {
+            const li = document.createElement("li");
+            li.textContent = `${m.name} - ${m.role}`;
+            scaleListEl.appendChild(li);
+          }
+        });
+      } else {
+        scaleListEl.innerHTML = "<li>Nenhum integrante escalado.</li>";
+      }
+    }
+
+    // Listagem de Músicas no Painel
+    const songsListEl = document.getElementById("dash-event-songs-list");
+    if (songsListEl) {
+      songsListEl.innerHTML = "";
+      if (nextEvent.songs && nextEvent.songs.length > 0) {
+        nextEvent.songs.forEach(sId => {
+          const s = songs.find(song => song.id === sId);
+          if (s) {
+            const p = document.createElement("p");
+            p.className = "dash-song-item";
+            p.textContent = `🎵 ${s.title} (${s.tone || 'N/A'})`;
+            songsListEl.appendChild(p);
+          }
+        });
+      } else {
+        songsListEl.innerHTML = "<p class='text-secondary'>Nenhuma música adicionada.</p>";
+      }
+    }
+  } else {
     if (document.getElementById("dash-event-title")) document.getElementById("dash-event-title").textContent = "Nenhum evento agendado.";
     if (document.getElementById("dash-event-time")) document.getElementById("dash-event-time").textContent = "-";
     if (document.getElementById("dash-event-arrival")) document.getElementById("dash-event-arrival").textContent = "-";
     if (document.getElementById("dash-event-dress")) document.getElementById("dash-event-dress").textContent = "-";
-    if (document.getElementById("dash-event-colors")) document.getElementById("dash-event-colors").innerHTML = "";
-    if (document.getElementById("dash-event-scale-list")) document.getElementById("dash-event-scale-list").innerHTML = "<li>Nenhum integrante escalado.</li>";
-    if (document.getElementById("dash-event-songs-list")) document.getElementById("dash-event-songs-list").innerHTML = "<p class='text-secondary'>Nenhuma música adicionada.</p>";
-    if (document.getElementById("stat-next-date")) document
+    if (document.getElementById("stat-next-date")) document.getElementById("stat-next-date").textContent = "--/--";
+  }
+}
+
+// 2. ESCALAS
+function renderEscalas() {
+  const container = document.getElementById("escalas-list-container");
+  if (!container) return;
+  container.innerHTML = events.length === 0 ?
