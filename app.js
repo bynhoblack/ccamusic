@@ -46,9 +46,20 @@ async function loadData() {
     }
 }
 
-// --- AUTENTICAÇÃO REAL (SUPABASE) ---
-async function registrarUsuario(name, email, password, role) {
+// --- AUTENTICAÇÃO REAL ---
+async function registrarUsuario(name, emailPrefix, password, confirmPassword, role, adminCode) {
+    if (password !== confirmPassword) return alert("As senhas não coincidem!");
+    if (password.length < 6) return alert("A senha deve ter pelo menos 6 caracteres.");
+    
+    // Constrói o e-mail completo
+    const email = `${emailPrefix}@ccamusic.com.br`;
+
     try {
+        // Validação de Admin
+        if (role === 'Administrador' && adminCode !== '1234') { // Mude '1234' para seu código secreto
+            throw new Error("Código de Administrador inválido.");
+        }
+
         const { data, error } = await supabaseClient.auth.signUp({
             email: email,
             password: password,
@@ -56,9 +67,8 @@ async function registrarUsuario(name, email, password, role) {
         });
         if (error) throw error;
         
-        // Salva na tabela de membros
         await supabaseClient.from('members').insert([{ name, email, role }]);
-        alert("Cadastro realizado!");
+        alert("Cadastro realizado! Verifique seu e-mail se necessário.");
         location.reload();
     } catch (err) { alert("Erro no cadastro: " + err.message); }
 }
@@ -115,7 +125,9 @@ function initAuthListeners() {
                 document.getElementById('register-name').value,
                 document.getElementById('register-email-user').value,
                 document.getElementById('register-password').value,
-                document.getElementById('register-access').value
+                document.getElementById('register-confirm').value,
+                document.getElementById('register-access').value,
+                document.getElementById('register-admin-code').value
             );
         });
     }
